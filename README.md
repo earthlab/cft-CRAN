@@ -63,15 +63,9 @@ climate model called MACA (Multivariate Adaptive Climate Analog) Version
 
 # Loading the cft package from github
 
-``` r
-library(devtools)
-install_github("earthlab/cft", force = TRUE)
-```
-
 ## Attach cft and check the list of available functions
 
 ``` r
-library(multidplyr)
 library(cft)
 ls(pos="package:cft")
 ```
