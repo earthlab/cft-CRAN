@@ -1,0 +1,71 @@
+Package: cft
+Type: Package
+Title: Climate Futures Toolbox
+Version: 1.0.0
+Authors@R: c(
+    person(given = "Ty",
+           family = "Tuff",
+           role = c("aut"),
+           email = "ty.tuff@colorado.edu",
+           comment = c(ORCID = "0000-0001-5249-5197")),
+    person(given = "Megan",
+           family = "Collins",
+           role = c("aut"),
+           email = "megan.h.collins@colorado.edu"),
+    person(given = "Travis",
+           family = "Williams",
+           role = c("aut"),
+           email = "travis.williams@colorado.edu"),
+    person(given = "Max",
+           family = "Joseph",
+           role = c("aut", "cre"),
+           email = "maxwell.b.joseph@colorado.edu",
+           comment = c(ORCID = "0000-0002-7745-9990")),
+    person(given = "Natasha",
+           family = "Stavros",
+           role = c("aut"),
+           email = "natasha.stavros@colorado.edu",
+           comment = c(ORCID = "0000-0001-6657-7310")),
+    person(given = "Erick",
+           family = "Verleye",
+           role = c("aut"),
+           email = "erve3705@colorado.edu")
+    )
+Maintainer: Erick Verleye <erve3705@colorado.edu>
+Description: This is a package developed as a collaboration between Earth laband the North Central Climate Adaptation Science Center to help users gaininsights from available climate data. This package includes tools andinstructions for downloading climate data via a USGS API and then organizing those data for visualization and analysis that drive insight.
+URL: https://github.com/earthlab/cft
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 3.5.0),
+    plyr,
+    dplyr (>= 1.0.10),
+    osmdata,
+    tidync,
+    future,
+    magrittr,
+    furrr,
+    sf
+Imports:
+    epitools,
+    tidyr,
+    rlang,
+    pipeR,
+    rlist
+Suggests:
+    parallel,
+    lubridate,
+    rgdal,
+    ggplot2,
+    terra,
+    tidyterra,
+    tibble,
+    ggthemes,
+    knitr,
+    testthat (>= 3.0.0),
+    rmarkdown,
+    stars
+VignetteBuilder: knitr, rmarkdown
+RoxygenNote: 7.2.1
+Config/testthat/edition: 3
