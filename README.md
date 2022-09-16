@@ -1,3 +1,8 @@
+
+<!-- badges: start -->
+  [![Codecov test coverage](https://codecov.io/gh/earthlab/cft-CRAN/branch/master/graph/badge.svg)](https://app.codecov.io/gh/earthlab/cft-CRAN?branch=master)
+  <!-- badges: end -->
+
 Climate Futures Toolbox
 ================
 
@@ -679,8 +684,3 @@ MACA climate model data is shown in the firehose vignette at
 downloading MACA climate model data for multiple climate variables from
 multiple climate models and emission scenarios in their entirety for a
 single lat/long location.**
-
-
-<!-- badges: start -->
-  [![Codecov test coverage](https://codecov.io/gh/earthlab/cft-CRAN/branch/master/graph/badge.svg)](https://app.codecov.io/gh/earthlab/cft-CRAN?branch=master)
-  <!-- badges: end -->

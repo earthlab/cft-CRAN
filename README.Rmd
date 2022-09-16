@@ -5,6 +5,11 @@ output:
     html_preview: True
 
 ---
+
+<!-- badges: start -->
+  [![Codecov test coverage](https://codecov.io/gh/earthlab/cft-CRAN/branch/master/graph/badge.svg)](https://app.codecov.io/gh/earthlab/cft-CRAN?branch=master)
+  <!-- badges: end -->
+
 # Welcome to the Climate Futures Toolbox
 
   This is a package developed as a collaboration between Earth lab and the North Central Climate Adaptation Science Center to help users gain insights from available climate data. This package
@@ -145,6 +150,3 @@ The single_point_firehose() function is also used to download data from the MACA
 
 **Therefore, the single_point_firehose function works best for downloading MACA climate model data for multiple climate variables from multiple climate models and emission scenarios in their entirety for a single lat/long location.** 
 
-<!-- badges: start -->
-  [![Codecov test coverage](https://codecov.io/gh/earthlab/cft-CRAN/branch/master/graph/badge.svg)](https://app.codecov.io/gh/earthlab/cft-CRAN?branch=master)
-  <!-- badges: end -->
