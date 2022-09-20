@@ -106,7 +106,7 @@ input_variables
 library(magrittr)
 aoi_name <- "colorado"
 bb <- getbb(aoi_name)
-my_boundary <- opq(bb, timeout=120) %>%
+my_boundary <- opq(bb, timeout=300) %>%
   add_osm_feature(key = "boundary", value = "national_park") %>%
   osmdata_sf()
 

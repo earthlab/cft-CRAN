@@ -1,10 +1,11 @@
-
-<!-- badges: start -->
-  [![Codecov test coverage](https://codecov.io/gh/earthlab/cft-CRAN/branch/master/graph/badge.svg)](https://app.codecov.io/gh/earthlab/cft-CRAN?branch=master)
-  <!-- badges: end -->
-
 Climate Futures Toolbox
 ================
+
+<!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/earthlab/cft-CRAN/branch/master/graph/badge.svg)](https://app.codecov.io/gh/earthlab/cft-CRAN?branch=master)
+<!-- badges: end -->
 
 # Welcome to the Climate Futures Toolbox
 
@@ -66,298 +67,53 @@ provides finer scale estimates. The cft package uses one downscaled
 climate model called MACA (Multivariate Adaptive Climate Analog) Version
 2 ([details here](http://www.climatologylab.org/maca.html)).
 
-# Loading the cft package from github
-
 ## Attach cft and check the list of available functions
 
 ``` r
 library(cft)
+```
+
+    ## Loading required package: plyr
+
+    ## Loading required package: dplyr
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:plyr':
+    ## 
+    ##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+    ##     summarize
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+    ## Loading required package: osmdata
+
+    ## Data (c) OpenStreetMap contributors, ODbL 1.0. https://www.openstreetmap.org/copyright
+
+    ## Loading required package: tidync
+
+    ## Loading required package: future
+
+    ## Loading required package: magrittr
+
+    ## Loading required package: furrr
+
+    ## Loading required package: sf
+
+    ## Linking to GEOS 3.11.0, GDAL 3.5.1, PROJ 9.0.1; sf_use_s2() is TRUE
+
+``` r
 ls(pos="package:cft")
 ```
 
-    ##   [1] "%->%"                         "%<-%"                        
-    ##   [3] "%>%"                          "%>>%"                        
-    ##   [5] "%conditions%"                 "%globals%"                   
-    ##   [7] "%label%"                      "%lazy%"                      
-    ##   [9] "%packages%"                   "%plan%"                      
-    ##  [11] "%seed%"                       "%stdout%"                    
-    ##  [13] "%tweak%"                      "a_ply"                       
-    ##  [15] "aaply"                        "activate"                    
-    ##  [17] "active"                       "active<-"                    
-    ##  [19] "add_osm_feature"              "add_osm_features"            
-    ##  [21] "adply"                        "ageadjust.direct"            
-    ##  [23] "ageadjust.indirect"           "all_of"                      
-    ##  [25] "alply"                        "amv_dimnames"                
-    ##  [27] "any_of"                       "arrange"                     
-    ##  [29] "as_Spatial"                   "as_tibble"                   
-    ##  [31] "as.cluster"                   "as.FutureGlobals"            
-    ##  [33] "as.hour"                      "as.month"                    
-    ##  [35] "as.quoted"                    "as.week"                     
-    ##  [37] "autoStopCluster"              "available_data"              
-    ##  [39] "available_features"           "available_tags"              
-    ##  [41] "availableCores"               "availableWorkers"            
-    ##  [43] "backtrace"                    "bbox_to_string"              
-    ##  [45] "binom.approx"                 "binom.exact"                 
-    ##  [47] "binom.wilson"                 "build_longer_spec"           
-    ##  [49] "build_wider_spec"             "catcolwise"                  
-    ##  [51] "check_pivot_spec"             "chop"                        
-    ##  [53] "cluster"                      "ClusterFuture"               
-    ##  [55] "colorbrewer.data"             "colorbrewer.display"         
-    ##  [57] "colorbrewer.palette"          "colors.matrix"               
-    ##  [59] "colors.plot"                  "colwise"                     
-    ##  [61] "compact"                      "complete"                    
-    ##  [63] "complete_"                    "ConstantFuture"              
-    ##  [65] "contains"                     "count"                       
-    ##  [67] "create_progress_bar"          "crossing"                    
-    ##  [69] "crossing_"                    "d_ply"                       
-    ##  [71] "daply"                        "dbDataType"                  
-    ##  [73] "dbWriteTable"                 "ddply"                       
-    ##  [75] "defaults"                     "desc"                        
-    ##  [77] "dlply"                        "drop_na"                     
-    ##  [79] "drop_na_"                     "each"                        
-    ##  [81] "empty"                        "ends_with"                   
-    ##  [83] "epicurve.dates"               "epicurve.hours"              
-    ##  [85] "epicurve.months"              "epicurve.table"              
-    ##  [87] "epicurve.weeks"               "epidate"                     
-    ##  [89] "epitab"                       "epitable"                    
-    ##  [91] "eval.quoted"                  "everything"                  
-    ##  [93] "expand"                       "expand_"                     
-    ##  [95] "expand_grid"                  "expand.table"                
-    ##  [97] "expected"                     "extract"                     
-    ##  [99] "extract_"                     "extract_numeric"             
-    ## [101] "failwith"                     "fill"                        
-    ## [103] "fill_"                        "full_seq"                    
-    ## [105] "furrr_options"                "future"                      
-    ## [107] "Future"                       "future_imap"                 
-    ## [109] "future_imap_chr"              "future_imap_dbl"             
-    ## [111] "future_imap_dfc"              "future_imap_dfr"             
-    ## [113] "future_imap_int"              "future_imap_lgl"             
-    ## [115] "future_imap_raw"              "future_invoke_map"           
-    ## [117] "future_invoke_map_chr"        "future_invoke_map_dbl"       
-    ## [119] "future_invoke_map_dfc"        "future_invoke_map_dfr"       
-    ## [121] "future_invoke_map_int"        "future_invoke_map_lgl"       
-    ## [123] "future_invoke_map_raw"        "future_iwalk"                
-    ## [125] "future_map"                   "future_map_at"               
-    ## [127] "future_map_chr"               "future_map_dbl"              
-    ## [129] "future_map_dfc"               "future_map_dfr"              
-    ## [131] "future_map_if"                "future_map_int"              
-    ## [133] "future_map_lgl"               "future_map_raw"              
-    ## [135] "future_map2"                  "future_map2_chr"             
-    ## [137] "future_map2_dbl"              "future_map2_dfc"             
-    ## [139] "future_map2_dfr"              "future_map2_int"             
-    ## [141] "future_map2_lgl"              "future_map2_raw"             
-    ## [143] "future_modify"                "future_modify_at"            
-    ## [145] "future_modify_if"             "future_options"              
-    ## [147] "future_pmap"                  "future_pmap_chr"             
-    ## [149] "future_pmap_dbl"              "future_pmap_dfc"             
-    ## [151] "future_pmap_dfr"              "future_pmap_int"             
-    ## [153] "future_pmap_lgl"              "future_pmap_raw"             
-    ## [155] "future_pwalk"                 "future_walk"                 
-    ## [157] "future_walk2"                 "futureAssign"                
-    ## [159] "futureCall"                   "FutureCondition"             
-    ## [161] "FutureError"                  "FutureGlobals"               
-    ## [163] "FutureMessage"                "futureOf"                    
-    ## [165] "FutureResult"                 "futures"                     
-    ## [167] "futureSessionInfo"            "FutureWarning"               
-    ## [169] "gather"                       "gather_"                     
-    ## [171] "gdal_addo"                    "gdal_create"                 
-    ## [173] "gdal_crs"                     "gdal_extract"                
-    ## [175] "gdal_inv_geotransform"        "gdal_metadata"               
-    ## [177] "gdal_polygonize"              "gdal_rasterize"              
-    ## [179] "gdal_read"                    "gdal_read_mdim"              
-    ## [181] "gdal_subdatasets"             "gdal_utils"                  
-    ## [183] "gdal_write"                   "gdal_write_mdim"             
-    ## [185] "get_key_pos"                  "get_overpass_url"            
-    ## [187] "getbb"                        "getExpression"               
-    ## [189] "getGlobalsAndPackages"        "here"                        
-    ## [191] "hoist"                        "hyper_array"                 
-    ## [193] "hyper_dims"                   "hyper_filter"                
-    ## [195] "hyper_grids"                  "hyper_slice"                 
-    ## [197] "hyper_tbl_cube"               "hyper_tibble"                
-    ## [199] "hyper_transforms"             "hyper_vars"                  
-    ## [201] "id"                           "idata.frame"                 
-    ## [203] "is.discrete"                  "is.formula"                  
-    ## [205] "is.quoted"                    "isplit2"                     
-    ## [207] "join"                         "join_all"                    
-    ## [209] "join.keys"                    "julian2date"                 
-    ## [211] "kapmeier"                     "l_ply"                       
-    ## [213] "laply"                        "last_col"                    
-    ## [215] "ldply"                        "left_join"                   
-    ## [217] "library.dynam"                "library.dynam.unload"        
-    ## [219] "liply"                        "List"                        
-    ## [221] "list.all"                     "list.any"                    
-    ## [223] "list.append"                  "list.apply"                  
-    ## [225] "list.cases"                   "list.cbind"                  
-    ## [227] "list.class"                   "list.clean"                  
-    ## [229] "list.common"                  "list.count"                  
-    ## [231] "list.do"                      "list.exclude"                
-    ## [233] "list.expand"                  "list.extract"                
-    ## [235] "list.filter"                  "list.find"                   
-    ## [237] "list.findi"                   "list.first"                  
-    ## [239] "list.flatten"                 "list.group"                  
-    ## [241] "list.if"                      "list.insert"                 
-    ## [243] "list.is"                      "list.iter"                   
-    ## [245] "list.join"                    "list.last"                   
-    ## [247] "list.load"                    "list.map"                    
-    ## [249] "list.maps"                    "list.mapv"                   
-    ## [251] "list.match"                   "list.merge"                  
-    ## [253] "list.names"                   "list.order"                  
-    ## [255] "list.parse"                   "list.prepend"                
-    ## [257] "list.rbind"                   "list.remove"                 
-    ## [259] "list.reverse"                 "list.sample"                 
-    ## [261] "list.save"                    "list.search"                 
-    ## [263] "list.select"                  "list.serialize"              
-    ## [265] "list.skip"                    "list.skipWhile"              
-    ## [267] "list.sort"                    "list.stack"                  
-    ## [269] "list.subset"                  "list.table"                  
-    ## [271] "list.take"                    "list.takeWhile"              
-    ## [273] "list.ungroup"                 "list.unserialize"            
-    ## [275] "list.unzip"                   "list.update"                 
-    ## [277] "list.which"                   "list.zip"                    
-    ## [279] "llply"                        "m_ply"                       
-    ## [281] "makeClusterMPI"               "makeClusterPSOCK"            
-    ## [283] "makeNodePSOCK"                "mandelbrot"                  
-    ## [285] "mandelbrot_tiles"             "maply"                       
-    ## [287] "mapvalues"                    "match_df"                    
-    ## [289] "matches"                      "mdply"                       
-    ## [291] "mlply"                        "multicore"                   
-    ## [293] "MulticoreFuture"              "multiprocess"                
-    ## [295] "MultiprocessFuture"           "multisession"                
-    ## [297] "MultisessionFuture"           "mutate"                      
-    ## [299] "NA_agr_"                      "NA_bbox_"                    
-    ## [301] "NA_crs_"                      "NA_m_range_"                 
-    ## [303] "NA_z_range_"                  "name_rows"                   
-    ## [305] "nbrOfFreeWorkers"             "nbrOfWorkers"                
-    ## [307] "nest"                         "nest_"                       
-    ## [309] "nest_legacy"                  "nesting"                     
-    ## [311] "nesting_"                     "num_range"                   
-    ## [313] "numcolwise"                   "oddsratio"                   
-    ## [315] "oddsratio.fisher"             "oddsratio.midp"              
-    ## [317] "oddsratio.small"              "oddsratio.wald"              
-    ## [319] "one_of"                       "opq"                         
-    ## [321] "opq_around"                   "opq_enclosing"               
-    ## [323] "opq_osm_id"                   "opq_string"                  
-    ## [325] "or.midp"                      "ormidp.test"                 
-    ## [327] "osm_elevation"                "osm_lines"                   
-    ## [329] "osm_multilines"               "osm_multipolygons"           
-    ## [331] "osm_points"                   "osm_poly2line"               
-    ## [333] "osm_polygons"                 "osmdata"                     
-    ## [335] "osmdata_sc"                   "osmdata_sf"                  
-    ## [337] "osmdata_sp"                   "osmdata_xml"                 
-    ## [339] "overpass_status"              "pack"                        
-    ## [341] "Pipe"                         "pipeline"                    
-    ## [343] "pivot_longer"                 "pivot_longer_spec"           
-    ## [345] "pivot_wider"                  "pivot_wider_spec"            
-    ## [347] "pivot_wider.sf"               "plan"                        
-    ## [349] "plot_sf"                      "pois.approx"                 
-    ## [351] "pois.byar"                    "pois.daly"                   
-    ## [353] "pois.exact"                   "probratio"                   
-    ## [355] "progress_none"                "progress_text"               
-    ## [357] "progress_time"                "progress_tk"                 
-    ## [359] "progress_win"                 "quickdf"                     
-    ## [361] "r_ply"                        "raply"                       
-    ## [363] "rate2by2.test"                "rateratio"                   
-    ## [365] "rateratio.midp"               "rateratio.wald"              
-    ## [367] "ratetable"                    "rawToHex"                    
-    ## [369] "rbind.fill"                   "rbind.fill.matrix"           
-    ## [371] "rdply"                        "read_sf"                     
-    ## [373] "remote"                       "rename"                      
-    ## [375] "replace_na"                   "resetWorkers"                
-    ## [377] "resolve"                      "resolved"                    
-    ## [379] "result"                       "revalue"                     
-    ## [381] "riskratio"                    "riskratio.boot"              
-    ## [383] "riskratio.small"              "riskratio.wald"              
-    ## [385] "rlply"                        "RngFutureCondition"          
-    ## [387] "RngFutureError"               "RngFutureWarning"            
-    ## [389] "round_any"                    "run"                         
-    ## [391] "select"                       "separate"                    
-    ## [393] "separate_"                    "separate_rows"               
-    ## [395] "separate_rows_"               "sequential"                  
-    ## [397] "SequentialFuture"             "sessionDetails"              
-    ## [399] "set_overpass_url"             "sf_add_proj_units"           
-    ## [401] "sf_extSoftVersion"            "sf_proj_info"                
-    ## [403] "sf_proj_network"              "sf_proj_pipelines"           
-    ## [405] "sf_proj_search_paths"         "sf_project"                  
-    ## [407] "sf_use_s2"                    "sf.colors"                   
-    ## [409] "single_point_firehose"        "splat"                       
-    ## [411] "split_indices"                "split_labels"                
-    ## [413] "spread"                       "spread_"                     
-    ## [415] "st_agr"                       "st_agr<-"                    
-    ## [417] "st_area"                      "st_as_binary"                
-    ## [419] "st_as_grob"                   "st_as_s2"                    
-    ## [421] "st_as_sf"                     "st_as_sfc"                   
-    ## [423] "st_as_text"                   "st_axis_order"               
-    ## [425] "st_bbox"                      "st_bind_cols"                
-    ## [427] "st_boundary"                  "st_buffer"                   
-    ## [429] "st_cast"                      "st_centroid"                 
-    ## [431] "st_collection_extract"        "st_combine"                  
-    ## [433] "st_contains"                  "st_contains_properly"        
-    ## [435] "st_convex_hull"               "st_coordinates"              
-    ## [437] "st_covered_by"                "st_covers"                   
-    ## [439] "st_crop"                      "st_crosses"                  
-    ## [441] "st_crs"                       "st_crs<-"                    
-    ## [443] "st_delete"                    "st_difference"               
-    ## [445] "st_dimension"                 "st_disjoint"                 
-    ## [447] "st_distance"                  "st_drivers"                  
-    ## [449] "st_drop_geometry"             "st_equals"                   
-    ## [451] "st_equals_exact"              "st_filter"                   
-    ## [453] "st_geometry"                  "st_geometry_type"            
-    ## [455] "st_geometry<-"                "st_geometrycollection"       
-    ## [457] "st_graticule"                 "st_inscribed_circle"         
-    ## [459] "st_interpolate_aw"            "st_intersection"             
-    ## [461] "st_intersects"                "st_is"                       
-    ## [463] "st_is_empty"                  "st_is_longlat"               
-    ## [465] "st_is_simple"                 "st_is_valid"                 
-    ## [467] "st_is_within_distance"        "st_jitter"                   
-    ## [469] "st_join"                      "st_layers"                   
-    ## [471] "st_length"                    "st_line_merge"               
-    ## [473] "st_line_sample"               "st_linestring"               
-    ## [475] "st_m_range"                   "st_make_grid"                
-    ## [477] "st_make_valid"                "st_minimum_rotated_rectangle"
-    ## [479] "st_multilinestring"           "st_multipoint"               
-    ## [481] "st_multipolygon"              "st_nearest_feature"          
-    ## [483] "st_nearest_points"            "st_node"                     
-    ## [485] "st_normalize"                 "st_overlaps"                 
-    ## [487] "st_point"                     "st_point_on_surface"         
-    ## [489] "st_polygon"                   "st_polygonize"               
-    ## [491] "st_precision"                 "st_precision<-"              
-    ## [493] "st_read"                      "st_read_db"                  
-    ## [495] "st_relate"                    "st_reverse"                  
-    ## [497] "st_sample"                    "st_segmentize"               
-    ## [499] "st_set_agr"                   "st_set_crs"                  
-    ## [501] "st_set_geometry"              "st_set_precision"            
-    ## [503] "st_sf"                        "st_sfc"                      
-    ## [505] "st_shift_longitude"           "st_simplify"                 
-    ## [507] "st_snap"                      "st_sym_difference"           
-    ## [509] "st_touches"                   "st_transform"                
-    ## [511] "st_triangulate"               "st_union"                    
-    ## [513] "st_viewport"                  "st_voronoi"                  
-    ## [515] "st_within"                    "st_wrap_dateline"            
-    ## [517] "st_write"                     "st_write_db"                 
-    ## [519] "st_z_range"                   "st_zm"                       
-    ## [521] "starts_with"                  "strip_splits"                
-    ## [523] "summarise"                    "summarize"                   
-    ## [525] "supportsMulticore"            "system.file"                 
-    ## [527] "tab2by2.test"                 "table.margins"               
-    ## [529] "take"                         "tibble"                      
-    ## [531] "tidync"                       "tidyr_legacy"                
-    ## [533] "transparent"                  "TransparentFuture"           
-    ## [535] "tribble"                      "trim_osmdata"                
-    ## [537] "true"                         "try_default"                 
-    ## [539] "tryapply"                     "tryEval"                     
-    ## [541] "tryGet"                       "tryNULL"                     
-    ## [543] "tweak"                        "unchop"                      
-    ## [545] "uncount"                      "UnexpectedFutureResultError" 
-    ## [547] "UniprocessFuture"             "unique_osmdata"              
-    ## [549] "unite"                        "unite_"                      
-    ## [551] "unname_osmdata_sf"            "unnest"                      
-    ## [553] "unnest_"                      "unnest_auto"                 
-    ## [555] "unnest_legacy"                "unnest_longer"               
-    ## [557] "unnest_wider"                 "unpack"                      
-    ## [559] "unrowname"                    "vaggregate"                  
-    ## [561] "value"                        "values"                      
-    ## [563] "vec_cast.sfc"                 "vec_ptype2.sfc"              
-    ## [565] "write_sf"
+    ## [1] "available_data"        "single_point_firehose"
 
 ## Look at the documentation for those functions
 
@@ -365,13 +121,9 @@ ls(pos="package:cft")
 ?available_data
 ```
 
-    ## ℹ Rendering development documentation for "available_data"
-
 ``` r
 ?single_point_firehose
 ```
-
-    ## ℹ Rendering development documentation for "single_point_firehose"
 
 # Use read-only mode to find available data without initiating a full download.
 

@@ -17,3 +17,6 @@ plyr
 pipeR
 cft
 magrittr
+tibble
+terra
+tidyterra

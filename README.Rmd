@@ -74,7 +74,7 @@ ls(pos="package:cft")
 
 
 # Use read-only mode to find available data without initiating a full download.
-```{r available data, cache=TRUE}
+```{r available_data, cache=TRUE}
 inputs <- cft::available_data()
 
 ```
@@ -102,7 +102,7 @@ levels(as.factor(inputs$variable_names$`Model abbreviation`))
 
 ## Filter variable names
 This filter includes all of the climate models, all of the scenarios, and 5 variables. It is a big request.
-```{r filter variables many, cache=TRUE}
+```{r filter_variables_many, cache=TRUE}
 input_variables <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Relative Humidity", 
                        "Maximum Temperature", 

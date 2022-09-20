@@ -133,7 +133,7 @@ OSM uses a 'key' and 'value' system for organizing requests. You may want to spe
 library(osmdata)
 
 bb <- getbb("Hot Springs")
-my_boundary <- opq(bb, timeout=180) %>% 
+my_boundary <- opq(bb, timeout=300) %>% 
   add_osm_feature(key = "boundary", value = "national_park") %>% 
 osmdata_sf() 
 
@@ -301,7 +301,7 @@ bb_manual[1,2] <- -109.8305463801207
 bb_manual[2,1] <- 44.12354048271325
 bb_manual[2,2] <- 45.11911641599412
 
-my_boundary_yellow <- opq(bb_manual, timeout=180) %>% 
+my_boundary_yellow <- opq(bb_manual, timeout=300) %>% 
   add_osm_feature(key = "boundary", value = "national_park") %>% 
 osmdata_sf() 
 
@@ -502,7 +502,7 @@ bb_manual[1,2] <- -109.8305463801207
 bb_manual[2,1] <- 44.12354048271325
 bb_manual[2,2] <- 45.11911641599412
 
-my_boundary <- opq(bb_manual, timeout=180) %>% 
+my_boundary <- opq(bb_manual, timeout=300) %>% 
   add_osm_feature(key = "boundary", value = "national_park") %>% 
 osmdata_sf() 
 
@@ -884,7 +884,7 @@ Precipitation increases and decreases are predicted by different models.
 
 This code obtains Open Street Map data for rivers in Yellowstone National Park and its adjacent parks and converts it to a spatial format.
 ```{r pull_river_data, fig.height=10, cache=TRUE}
-river <- opq(bb_manual, timeout=180) %>%
+river <- opq(bb_manual, timeout=300) %>%
   add_osm_feature(key = "waterway", value = "river") %>%
   osmdata_sf() 
 river
@@ -964,7 +964,7 @@ This code is aggregating to road segments in Yellowstone National Park and its a
 
 ```{r, eval=TRUE}
 library(terra)
-roads <- opq(pulled_bb_large, timeout=180) %>%
+roads <- opq(pulled_bb_large, timeout=300) %>%
   add_osm_feature(key = 'highway', value = 'primary') %>%
   add_osm_feature(key = 'highway', value = 'secondary') %>%
   osmdata_sf() 

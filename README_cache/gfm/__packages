@@ -1,0 +1,9 @@
+plyr
+dplyr
+osmdata
+tidync
+future
+magrittr
+furrr
+sf
+cft
