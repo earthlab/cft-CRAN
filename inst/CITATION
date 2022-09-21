@@ -6,7 +6,7 @@ citEntry(
   author   = personList(as.person("Ty Tuff"), as.person("Megan Collins"), as.person("Travis Williams"), as.person("Max Joseph"), as.person("Natasha Stavros"), as.person("Erick Verleye")),
   year     ="2022",
   url      ="https://github.com/earthlab/cft",
-  institution ="University of Colorado Boulder Earth Lab Analytics Hub"
+  institution ="University of Colorado Boulder Earth Lab Analytics Hub",
   textVersion = paste("Ty Tuff, Megan Collins, Travis Williams, Max Joseph, Natasha Stavros, Erick Verleye (2022).",
 		      "Climate Futures Toolbox.",
  		      "University of Colorado Boulder Earth Lab Analytics Hub.",

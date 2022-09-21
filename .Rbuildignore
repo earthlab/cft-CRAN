@@ -5,6 +5,7 @@
 ^CODE_OF_CONDUCT\.md$
 ^cran-comments\.md$
 ^README_cache$
-^inst/doc$
+^full_tests$
+^full_vignettes$
 ^codecov\.yml$
 ^\.github$

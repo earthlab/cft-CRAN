@@ -35,8 +35,6 @@ single_point_firehose <- function(input_variables, lat, lon,
   n_cores <- availableCores() - 1
   plan(multisession, workers = n_cores)
   
-  
-  
   message('Trying to connect to the USGS.gov API')
   
   src <- tidync::tidync(web_link)
@@ -53,7 +51,6 @@ single_point_firehose <- function(input_variables, lat, lon,
       Pulled_data_single_space_single_timepoint <- src %>% 
         hyper_filter(lat = lat == c(new_lat)) %>% 
         hyper_filter(lon = lon == c(new_lon)) %>%
-        #hyper_filter(time = times$`Available times` ==  44558) %>% 
         hyper_tibble(select_var = input_variables[column]) %>%
         as.data.frame() 
       

@@ -1,0 +1,4 @@
+This directory contains vignettes that take a significant time to build and are 
+thus excluded from the CRAN package. This directory is tracked in git and users 
+are directed here from the abridged version of the vignettes if they would like 
+to view them in their entirety.

@@ -65,7 +65,7 @@ many different models, treating each as one plausible future.
 Most GCMs are spatially coarse (often 1 degree), but downscaling
 provides finer scale estimates. The cft package uses one downscaled
 climate model called MACA (Multivariate Adaptive Climate Analog) Version
-2 ([details here](http://www.climatologylab.org/maca.html)).
+2 ([details here](https://www.climatologylab.org/maca.html)).
 
 ## Attach cft and check the list of available functions
 

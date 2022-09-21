@@ -1,4 +1,6 @@
 test_that("Verify that available_data runs and returns something reasonable", {
+  skip_if_offline(host = "r-project.org")
+  
 	inputs <- cft::available_data()
 	
 	# First check the variables that were returned
@@ -69,23 +71,18 @@ test_that("Verify that available_data runs and returns something reasonable", {
 	
 	# Verify all of the column names are what are expected
 	expected_variable_colnames <- c("Available variable",
-                                                                "Variable",
-                                                                "Units",
-                                                                "Model",
-                                                                "Model ensemble type (only CCSM4 relevant)",
-                                                                "Scenario",
-                                                                "Variable abbreviation",
-                                                                "Model abbreviation",
-                                                                "Scenario abbreviation")
+                                  "Variable",
+                                  "Units",
+                                  "Model",
+                                  "Model ensemble type (only CCSM4 relevant)",
+                                  "Scenario",
+                                  "Variable abbreviation",
+                                  "Model abbreviation",
+                                  "Scenario abbreviation")
 	expect_setequal(colnames(inputs$variable_names), expected_variable_colnames)
 	
 	expected_available_times_colnames <- c("Available times", "dates")
 	expect_setequal(colnames(inputs$available_times), expected_available_times_colnames)
 
 }
-
-
-
-
-
 )
