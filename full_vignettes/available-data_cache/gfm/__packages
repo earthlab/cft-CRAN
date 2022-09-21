@@ -1,0 +1,16 @@
+plyr
+dplyr
+osmdata
+tidync
+future
+magrittr
+furrr
+sf
+cft
+ggplot2
+tibble
+abind
+stars
+terra
+tidyr
+tidyterra

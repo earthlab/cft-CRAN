@@ -1,6 +1,8 @@
 ---
 title: "Using available data function"
-output: rmarkdown::html_vignette
+output: 
+  github_document:
+    html_preview: True
 vignette: >
   %\VignetteIndexEntry{Using available data function}
   %\VignetteEncoding{UTF-8}
