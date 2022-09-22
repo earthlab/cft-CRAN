@@ -2,7 +2,7 @@
 title: "Using Firehose Function"
 author: "Ty Tuff"
 date: "2022-09-02"
-output: rmarkdown::html_vignette
+output: html_document
 vignette: >
   %\VignetteIndexEntry{Using Firehose Function}
   %\VignetteEncoding{UTF-8}

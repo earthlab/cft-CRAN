@@ -57,6 +57,7 @@ Suggests:
     parallel,
     lubridate,
     rgdal,
+    raster,
     ggplot2,
     terra,
     tidyterra,

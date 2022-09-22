@@ -71,13 +71,13 @@ test_that("Verify that single_point_firehose runs and returns something reasonab
     }
   }
   
-  #for (g in out$geometry) {
+  for (g in out$geometry) {
     # Test the longitude is close 
-    #expect_lt(abs(g[1][1] - known_lon), 0.05)
+    expect_lt(abs(g[1][1] - known_lon), 0.05)
     
     # Test the latitude is close 
-    #expect_lt(abs(g[2][1] - known_lat), 0.05)
-  #}
+    expect_lt(abs(g[2][1] - known_lat), 0.05)
+  }
   
   # Make sure range of times returned is within 1950 - 2099
   expect_lte(lubridate::date(inputs$available_times[which(

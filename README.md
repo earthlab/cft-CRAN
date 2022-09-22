@@ -144,7 +144,7 @@ inputs <- cft::available_data()
 
     ## Converting into an R data.table
 
-# Donwloading Data
+# Downloading Data
 
 There are too many data available to download in a single download
 request. You will need limit your requests to 500 MB. This is enough to
@@ -399,7 +399,7 @@ available_data vignette at:
 <https://github.com/earthlab/cft/blob/main/vignettes/available-data.md>.
 As is mentioned in the available_data vignette, it is computationally
 expensive to stitch the data from multiple download requests using
-availabe_data together, so it is easier and more computationally
+available_data together, so it is easier and more computationally
 efficient to use the single_point_firehose function if you encounter
 errors when trying to download data using the available_data function.
 

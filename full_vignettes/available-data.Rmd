@@ -2,7 +2,7 @@
 title: "Using available data function"
 output: 
   github_document:
-    html_preview: True
+    html_preview: False
 vignette: >
   %\VignetteIndexEntry{Using available data function}
   %\VignetteEncoding{UTF-8}
