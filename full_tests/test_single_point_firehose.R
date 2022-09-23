@@ -1,6 +1,9 @@
 test_that("Verify that single_point_firehose runs and returns something reasonable", {
   library(tools)
   library(lubridate)
+  library(dplyr)
+  library(magrittr)
+  library(sf)
   
   get_b = function() {
     aoi_name <- "colorado"

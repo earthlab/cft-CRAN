@@ -42,25 +42,21 @@ Depends:
     plyr,
     dplyr (>= 1.0.10),
     osmdata,
+    magrittr
+Imports:
     tidync,
     future,
-    magrittr,
     furrr,
-    sf
-Imports:
+    sf,
     epitools,
     tidyr,
     rlang,
     pipeR,
     rlist
 Suggests:
-    parallel,
     lubridate,
-    rgdal,
     raster,
     ggplot2,
-    terra,
-    tidyterra,
     tibble,
     ggthemes,
     knitr,

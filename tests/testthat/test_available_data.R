@@ -1,4 +1,5 @@
 test_that("Verify that available_data runs and returns something reasonable", {
+  library(cft)
   skip_if_offline(host = "r-project.org")
   
 	inputs <- cft::available_data()

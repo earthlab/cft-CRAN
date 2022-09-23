@@ -58,10 +58,15 @@ a set of parameters, and a set of representative concentration pathways to retur
 Leaving these arguments empty will result in a download of all available data 
 for that location.
 
+Load the cft package and other libraries required for vignette. If you need to install cft, install it from CRAN.
+
 ## Attach cft and check the list of available functions
 ```{r}
 library(cft)
 ls(pos="package:cft")
+
+library(sf)
+library(ggplot2)
 ```
 
 # Use read-only mode to find available data without initiating a full download.

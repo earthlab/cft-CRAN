@@ -23,13 +23,14 @@ Load the cft package and other libraries required for vignette. If you need to i
 
 ```{r, warning=FALSE, message=FALSE}
 library(cft)
+library(future)
+library(furrr)
+library(ggplot2)
 ```
 
 We will start by setting up our computer to run code on multiple cores instead of just one. The availableCores() function first checks your local computer to see how many cores are available and then subtracts one so that you still have an available core for running your operating system. The plan() function then starts a back-end structure where tasks can be assigned. **These backend systems can sometimes have difficulty shutting down after the process is done, especially if you force quite an operation in the works. If you find your code stalling without good explanation, it's good to restart your computer to clear any of these structures that may be stuck in memory.**  
 
 ```{r, warning=FALSE, message=FALSE}
-library(future)
-library(furrr)
 n_cores <- availableCores() - 1
 plan(multicore, workers = n_cores)
 ```
@@ -60,8 +61,8 @@ inputs[[1]]
 
 From the table that was returned, we want to decide which variables we would like to request. If you are using the Firehose function, you likely have a long list of variables you'd like to download in their entirety. Use the [filter()](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter) function to select the variables you'd like to download. Store those choices in an object called input_variables to pass on to the Firehose function. 
 ```{r filter_variables_many, cache=TRUE}
-library(magrittr)
-library(dplyr)
+
+
 input_variables <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Relative Humidity", 
                        "Maximum Temperature", 
@@ -103,7 +104,6 @@ input_variables
 # Set your area of interest
   The Firehose function downloads all the requested variables, for all available time points, for a SINGLE geographic location. The underlying data are summarized to points on a grid and don't include every conceivable point you could enter. You need to first suggest a lat/long pair and then find the aggregated download point that is closest to your suggested point. In the code here, we use Open Street Map to download a polygon for Rocky Mountain National Park and then find the centroid as our suggested point. 
 ```{r, warning=FALSE, message=FALSE, cache=TRUE}
-library(magrittr)
 aoi_name <- "colorado"
 bb <- getbb(aoi_name)
 my_boundary <- opq(bb, timeout=300) %>%
@@ -118,14 +118,12 @@ boundaries <- my_boundary$osm_multipolygons[1,]
 ```
 
 ```{r}
-library(ggplot2)
 ggplot() +
   geom_sf(data = boundaries, fill = "cornflowerblue") 
  
 ```
 
 ```{r}
-library(osmdata)
 pulled_bb <-  st_bbox(boundaries)
 pulled_bb
 
@@ -140,7 +138,6 @@ pt
 
 Now we can check to see which point in the dataset most closely resembles our suggested point. 
 ```{r}
-library(magrittr)
 lat_pt <- pt[1,2]
 lon_pt <- pt[1,1]
 
@@ -162,7 +159,6 @@ chosen_pt
 
 A plot of the suggested point and the available point next to eachother for perspective. You can see that there is an available data slice very near our suggested point. 
 ```{r}
-library(ggplot2)
 ggplot() +
   geom_sf(data = boundaries, fill = "cornflowerblue") +
   geom_sf(data = st_centroid(boundaries), color = "red", size=0.5) +
@@ -192,7 +188,6 @@ out
 
 It is good practice to plot the downloaded data to confirm that they are from the correct location.
 ```{r, eval=FALSE}
-library(ggplot2)
 ggplot() +
   geom_sf(data = boundaries, fill = "cornflowerblue") +
  geom_sf(data = out, color = "red", size=0.5) +

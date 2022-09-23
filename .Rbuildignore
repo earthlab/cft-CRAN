@@ -9,3 +9,4 @@
 ^full_vignettes$
 ^codecov\.yml$
 ^\.github$
+^CRAN-SUBMISSION$

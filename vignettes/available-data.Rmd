@@ -59,10 +59,15 @@ a set of parameters, and a set of representative concentration pathways to retur
 Leaving these arguments empty will result in a download of all available data 
 for that location.
 
+Load the cft package and other libraries required for vignette. If you need to install cft, install it from CRAN.
+
 ## Attach cft and check the list of available functions
 ```{r}
 library(cft)
 ls(pos="package:cft")
+
+library(sf)
+library(ggplot2)
 ```
 
 # Use read-only mode to find available data without initiating a full download.
@@ -88,8 +93,7 @@ levels(as.factor(inputs$variable_names$`Model abbreviation`))
 
 This code downloads data for all models, all emission scenarios, and 5 climate variables.  Notice that this is a large download request.  
 ```{r}
-library(magrittr)
-library(dplyr)
+
 input_variables <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Relative Humidity", 
                        "Maximum Temperature", 
@@ -129,7 +133,6 @@ This chunk of code is first using the [getbb()](https://www.rdocumentation.org/p
 
 OSM uses a 'key' and 'value' system for organizing requests. You may want to spend some time familiarizing yourself with the immense library of data you can access with this system. https://wiki.openstreetmap.org/wiki/Tags
 ```{r bounding_box_small, cache=TRUE}
-library(osmdata)
 bb <- getbb("Hot Springs")
 my_boundary <- opq(bb, timeout=300) %>% 
   add_osm_feature(key = "boundary", value = "national_park") %>% 
@@ -141,8 +144,6 @@ Here you re-calibrate the bounding box relative to the actual shapefiles you dow
 
 Notice that we specify osm_multipolygons instead of osm_polygons. This is a case-specific choice. When you download a shapefile from OSM, if will include a number of different spatial object types and you can choose several of those options to move forward. We chose multipolygons because they best matched our area of interest. Use the quick plot below to visualize your area of interest before continuing. 
 ```{r pulled_bounding_box_small, cache=TRUE}
-library(osmdata)
-library(sf)
 boundaries <- my_boundary$osm_multipolygons
 pulled_bb <- st_bbox(boundaries)
 pulled_bb
@@ -150,7 +151,6 @@ pulled_bb
 
 This quick map allows you to check that the polygon you downloaded matches your expectations. 
 ```{r plot_of_area_of_interest_small, cache=TRUE, warning=FALSE, fig.height=8}
-library(ggplot2)
 basemap <- ggplot(data = boundaries) +
   geom_sf(fill = "cornflowerblue") +
   suppressWarnings(geom_sf_text(aes(label = boundaries$name))) 
