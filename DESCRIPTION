@@ -54,16 +54,7 @@ Imports:
     pipeR,
     rlist
 Suggests:
-    lubridate,
-    raster,
-    ggplot2,
-    tibble,
-    ggthemes,
-    knitr,
     testthat (>= 3.0.0),
-    rmarkdown,
-    stars,
     covr
-VignetteBuilder: knitr, rmarkdown
 RoxygenNote: 7.2.1
 Config/testthat/edition: 3
