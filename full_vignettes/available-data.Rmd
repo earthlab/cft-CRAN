@@ -17,7 +17,7 @@ This vignette provides a walk-through of a common use case of the Available Data
 understanding climate futures for a region of interest. 
 We'll use Hot Springs National Park, located in Arkansas, USA and Yellowstone National Park, located in Wyoming, USA, as case studies.
 
-Note that the available_data function is best used for downloading MACA climate model data for several climate variables from several climate models for any number of emission scenarios over a relatively small spatial region and over a relatively short time period.  If you would like to download MACA climate model data for several climate variables from several climate models and any number of emission scenarios in their entirety for a single lat/long location, you should use the single_point_firehose function in the cft pacakge.  A vignette on how to use the firehose function in the cft package is available at https://github.com/earthlab/cft/blob/main/vignettes/firehose.md.
+Note that the available_data function is best used for downloading MACA climate model data for several climate variables from several climate models for any number of emission scenarios over a relatively small spatial region and over a relatively short time period.  If you would like to download MACA climate model data for several climate variables from several climate models and any number of emission scenarios in their entirety for a single lat/long location, you should use the single_point_firehose function in the cft pacakge.  A vignette on how to use the firehose function in the cft package is available at https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/firehose.md
 
 ### What you'll learn
 
@@ -67,6 +67,11 @@ ls(pos="package:cft")
 
 library(sf)
 library(ggplot2)
+library(tidync)
+library(tibble)
+library(stars)
+library(terra)
+library(tidyterra)
 ```
 
 # Use read-only mode to find available data without initiating a full download.
@@ -92,8 +97,6 @@ levels(as.factor(inputs$variable_names$`Model abbreviation`))
 
 This code downloads data for all models, all emission scenarios, and 5 climate variables.  Notice that this is a large download request.  
 ```{r}
-library(magrittr)
-library(dplyr)
 input_variables <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Relative Humidity", 
                        "Maximum Temperature", 
@@ -133,7 +136,6 @@ This chunk of code is first using the [getbb()](https://www.rdocumentation.org/p
 
 OSM uses a 'key' and 'value' system for organizing requests. You may want to spend some time familiarizing yourself with the immense library of data you can access with this system. https://wiki.openstreetmap.org/wiki/Tags
 ```{r bounding_box_small, cache=TRUE}
-library(osmdata)
 bb <- getbb("Hot Springs")
 my_boundary <- opq(bb, timeout=300) %>% 
   add_osm_feature(key = "boundary", value = "national_park") %>% 
@@ -145,8 +147,6 @@ Here you re-calibrate the bounding box relative to the actual shapefiles you dow
 
 Notice that we specify osm_multipolygons instead of osm_polygons. This is a case-specific choice. When you download a shapefile from OSM, if will include a number of different spatial object types and you can choose several of those options to move forward. We chose multipolygons because they best matched our area of interest. Use the quick plot below to visualize your area of interest before continuing. 
 ```{r pulled_bounding_box_small, cache=TRUE}
-library(osmdata)
-library(sf)
 boundaries <- my_boundary$osm_multipolygons
 pulled_bb <- st_bbox(boundaries)
 pulled_bb
@@ -154,7 +154,6 @@ pulled_bb
 
 This quick map allows you to check that the polygon you downloaded matches your expectations. 
 ```{r plot_of_area_of_interest_small, cache=TRUE, warning=FALSE, fig.height=8}
-library(ggplot2)
 basemap <- ggplot(data = boundaries) +
   geom_sf(fill = "cornflowerblue") +
   suppressWarnings(geom_sf_text(aes(label = boundaries$name))) 
@@ -167,9 +166,6 @@ WARNING: TIME CONSUMING STEPS AHEAD
 It's time to download. Here is a simple and fast example of data from a single point (the centroid of our polygon) for one year (2099). On our local machine this takes ~3 minutes. 
 
 ```{r pull data for single point for one year, eval=TRUE}
-library(osmdata)
-library(sf)
-library(tidync)
 start_time <- Sys.time()
 center_point <- st_centroid(boundaries) %>% st_bbox(center_point)
 times <- inputs$available_times
@@ -198,9 +194,6 @@ Here we remove the time filter to download all the requested input variables for
 NOTE: When you ask for a big download, that may exceed the API limit, the API asks you to confirm that you want to try. This will prompt a YES/NO question in your console that you need to answer if you want to continue. If you find this step taking a very long time, check that your console isn't waiting for you to confirm that you want to try this request. 
 
 ```{r pull data for single point for all years, eval=FALSE}
-library(osmdata)
-library(sf)
-library(tidync)
 start_time <- Sys.time()
 center_point <- st_centroid(boundaries) %>% st_bbox(center_point)
 Pulled_data_single_space_all_timepoints <- inputs$src %>% 
@@ -234,7 +227,6 @@ Time is one of the easiest dimensions to filter along because the time data are 
 
 Here we are adding a generic index filled with 0's that we can use in the future, a column with 1's for the first half and 0's for the second half, and a column with 0's for the first half and 1's for the second. 
 ```{r filter_time_for_single_poing_with_error, cache=TRUE, eval=TRUE}
-library(tibble)
 # Year 2034
 time_min <- 38716
 time_max <- 73048
@@ -275,8 +267,6 @@ In the previous examples, we pulled data from a single point in the center of a 
 
 First, we will redefine our area of interest to include all the national parks that touch Yellowstone National Park. OSM provides a bounding box just like we used above for Hot Springs, Arkansas.  However, the bounding box provided by OSM for the national parks that touch Yellowstone National Park is larger than the official bounding box provided by the national parks service.  In the following code, we start by obtaining the bounding box from OSM and then manually adjust the corners of that bounding box to match the official bounding box from the national parks service. 
 ```{r bounding_box_large, cache=TRUE}
-library(osmdata)
-library(sf)
 bb <- getbb("yellowstone")
 bb_manual <- bb
 bb_manual[1,1] <- -111.15594815937659
@@ -294,7 +284,6 @@ pulled_bb_large
 
 Let's do another quickplot to make sure our area of interest matches our expectations. 
 ```{r plot_of_area_of_interest_large, cache=TRUE, warning=FALSE, fig.height=8}
-library(ggplot2)
 basemap <- ggplot(data = boundaries_large) +
   geom_sf(fill = "cornflowerblue") +
   suppressWarnings(geom_sf_text(aes(label = boundaries_large$name))) 
@@ -318,7 +307,6 @@ input_variables
 
 # Download data by AOI, filtered times, and filtered variable list
 ```{r pulled_data_for_small_area, cache=TRUE, eval=TRUE}
-library(tidync)
 Pulled_data_large_area_few_variables <- inputs$src %>% 
   hyper_filter(lat = lat <= c(pulled_bb_large[4]+0.05) & lat >= c(pulled_bb_large[2]-0.05)) %>% 
   hyper_filter(lon = lon <= c(pulled_bb_large[3]+0.05) & lon >= c(pulled_bb_large[1]-0.05)) %>%
@@ -339,7 +327,6 @@ plot(Pulled_data_large_area_few_variables$time, Pulled_data_large_area_few_varia
 ### Spatial extent plot
 Check here to make sure you downloaded the proper spatial extent. 
 ```{r check_pulled_data_for_large_area, cache=TRUE, fig.height=8, eval=TRUE}
-library(ggplot2)
 check_filter <- Pulled_data_large_area_few_variables %>% filter(time == min(Pulled_data_large_area_few_variables$time))
 ggplot() +
   geom_sf(data = boundaries_large, fill = "cornflowerblue") +
@@ -350,7 +337,6 @@ ggplot() +
 ## If you encounter an error suggesting that you are pulling too much data, you will need to stitch a few requests together to keep each call below the 500 MB limit. 
 
 ```{r stitch_pull_for_large_area, cache=TRUE, eval=TRUE}
-library(tidync)
 Pulled_data_sub1 <- inputs$src %>% 
   hyper_filter(lat = lat <= c(pulled_bb[4]+0.05) & lat >= c(pulled_bb[2]-0.05)) %>% 
   hyper_filter(lon = lon <= c(pulled_bb[3]+0.05) & lon >= c(pulled_bb[1]-0.05)) %>% 
@@ -379,7 +365,6 @@ plot(Pulled_data_stitch$time, Pulled_data_stitch$`pr_MIROC5_r1i1p1_rcp85`)
 
 # Melt downloaded points into a raster before aggregation
 ```{r rasterize_with_stars, cache=TRUE, fig.height=7}
-library(stars)
 rast <- st_rasterize(Pulled_data_large_area_few_variables) 
 plot(rast)
 ```
@@ -391,14 +376,11 @@ plot(rast)
 ## Aggregate to polygon (faster method)
 In order to aggregate our downloaded data into a polygon, we will use the terra and tidyterra packages to convert the raster of downloaded points into a Spatial Raster.  
 ```{r, eval=TRUE}
-library(terra)
-library(tidyterra)
 data <- rast(rast)
 ```
 
 We will now obtain the geometry of the boundary points for Yellowstone National Park and its adjacent national parks and convert them to a spatial object.  We will then convert that spatial object into a Spatial Vector.  Once we have a Spatial Vector of the boundary points for Yellowstone National Park and its adjacent national parks, we will extract data for those boundary points from the Spatial Raster and set xy=TRUE in order to obtain the lat/long coordinates of these points.  
 ```{r, eval=TRUE}
-library(terra)
 points <- vect(as_Spatial(boundaries_large$geometry))
 extracted <- terra::extract(data, points, xy=TRUE)
 ```
@@ -428,7 +410,6 @@ The code in this section will walk through how to create time and variable filte
 
 The following code is used to create a filter which will select data from the year 2034.  This filter creates an index which is given the value of 0 for times that are not in year 2034 and a value of 1 for times that are in the year 2034.   
 ```{r filter_time, cache=TRUE}
-library(tibble)
 # Year 2034
 time_min <- 72048
 time_max <- 73048
@@ -455,7 +436,6 @@ input_variables
 This code obtains the bounding box from Open Street Map (OSM) for the national parks adjacent to Yellowstone National Park and then manually updates the corners of the bounding box for this region to match the official bounding box from the National Parks Service.  This is done because the bounding box obtained from OSM is larger than the official bounding box from the National Parks Service so this adjustment makes sure that the bounding box for our area of interest matches our desired area of interest.    
 
 ```{r bounding_box, cache=TRUE}
-library(osmdata)
 bb <- getbb("yellowstone")
 bb_manual <- bb
 bb_manual[1,1] <- -111.15594815937659
@@ -469,8 +449,6 @@ my_boundary
 ```
 
 ```{r pulled_bounding_box, cache=TRUE}
-library(osmdata)
-library(sf)
 boundaries <- my_boundary$osm_multipolygons
 pulled_bb <- st_bbox(boundaries)
 pulled_bb
@@ -478,7 +456,6 @@ pulled_bb
 
 This code produces a map of the area of interest which can be used to ensure that the bounding box that was previously defined for the data matches our desired area of interest.
 ```{r plot_of_area_of_interest, cache=TRUE, warning=FALSE, fig.height=8}
-library(ggplot2)
 basemap <- ggplot(data = boundaries) +
   geom_sf(fill = "cornflowerblue") +
   suppressWarnings(geom_sf_text(aes(label = boundaries$name))) 
@@ -489,7 +466,6 @@ basemap
 
 This code downloads precipitation data from the Beijing Normal University Earth System Model and the Hadley Global Environmental Model 2 for emission scenario RCP 8.5 for the year 2034 in the national parks that touch Yellowstone National Park.  First, the `hyper_filter()` function is used to select data from the national parks that touch Yellowstone National Park by filtering both the latitude and longitude coordinates to coordinates within a small delta of the minimum and maximum coordinates of the bounding box that was previously defined.  Then the `hyper_filter()` function is used to filter the data to data from the year 2034 using the time filter that was defined above.  Finally, the `hyper_tibble()` function is used to select the precipitation data from the Beijing Normal University Earth System Model and the Hadley Global Environmental Model 2 for emission scenario RCP 8.5 using the filter that was defined above.   
 ```{r pulled_data, cache=TRUE}
-library(tidync)
 Pulled_data <- inputs$src %>% 
   hyper_filter(lat = lat <= c(pulled_bb[4]+0.05) & lat >= c(pulled_bb[2]-0.05)) %>% 
   hyper_filter(lon = lon <= c(pulled_bb[3]+0.05) & lon >= c(pulled_bb[1]-0.05)) %>% 
@@ -503,7 +479,6 @@ head(Pulled_data)
 
 This plot shows the data that were downloaded as red dots for the earliest time in year 2034 over the map of the national parks that touch Yellowstone National Park.  The data are shown for the earliest time in year 2034 because data were downloaded for multiple times so filtering to a single point in time shows the spatial distribution of the downloaded data without having to include each of the times for which data were downloaded. 
 ```{r check_pulled_data, cache=TRUE, fig.height=8, eval=TRUE}
-library(ggplot2)
 check_filter <- Pulled_data %>% filter(time == min(Pulled_data$time))
 ggplot() +
   geom_sf(data = boundaries, fill = "cornflowerblue") +
@@ -516,7 +491,6 @@ ggplot() +
 
 First, we will download data for the RCP 8.5 emission scenario from the Model for Interdisciplinary Research on Climate - Earth System Model.  This download will select maximum temperature, minimum temperature, eastward wind, and northward wind data within Yellowstone National Park at a single time point.  
 ```{r temp-midpoint, eval=TRUE}
-library(tidync)
 vars <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Temperature", "Minimum Temperature", "Eastward Wind", "Northward Wind")) %>% 
   filter(Scenario %in% c("RCP 8.5")) %>% 
@@ -601,7 +575,6 @@ vars
 
 This code uses both the time filter and the variable/model/emission scenario filter to download the desired data from the MACA climate model.  
 ```{r, eval=TRUE}
-library(tidync)
 growing_data <- inputs$src %>% 
   hyper_filter(lat = lat <= c(44.5+0.05) & lat >= c(44.5-0.05)) %>% 
   hyper_filter(lon = lon <= c(-110.5+0.05) & lon >= c(-110.5-0.05)) %>% 
@@ -686,7 +659,6 @@ growing_seasons
 Let's visualize the growing season over time for each model and emission scenario:
 
 ```{r plot-grow-season, fig.height = 5, fig.width = 6, eval=FALSE}
-library(ggplot2)
 growing_seasons %>%
   ggplot(aes(x = year, y = season_length, color = rcp)) + 
   geom_line(alpha = .3) + 
@@ -724,7 +696,6 @@ vars
 
 This code uses the variable, emission scenario, and climate model filter and the time filter that we defined previously to select and download data from the middle of Yellowstone National Park from the MACA climate model data.
 ```{r, eval=TRUE}
-library(tidync)
 climate_data <- inputs$src %>% 
   hyper_filter(lat = lat <= c(44.5+0.05) & lat >= c(44.5-0.05)) %>% 
   hyper_filter(lon = lon <= c(-110.5+0.05) & lon >= c(-110.5-0.05)) %>% 
@@ -816,7 +787,6 @@ river
 The following code obtains a subset of the Open Street Map river geometry for Yellowstone National Park and its adjacent national parks and then converts it into a Spatial Vector format.  In the final line of this code chunk, we use the extract function from the terra package to extract data from our Spatial Raster along the river geometry and store the lat/long coordinates of these points in an xy format in the resulting dataframe.   
 
 ```{r, eval=TRUE}
-library(terra)
 river_sub <- st_buffer(river$osm_lines, 2200)
 river_points <- vect(as_Spatial(river_sub))
 extracted_river <- terra::extract(data, river_points, xy=TRUE)
@@ -880,7 +850,6 @@ This code generates a plot of the projected humidity in 2040 along the rivers in
 This code is aggregating to road segments in Yellowstone National Park and its adjacent parks in a similar manner to the aggregation to rivers that was performed above.  First, we obtain the Open Street Map data of road segments in Yellowstone National Park and its adjacent parks and convert the open street map data into a spatial format.  We then obtain a subset of the Open Street Map road segment data and convert it to a Spatial Vector.  Then the humidity data is extracted from the Spatial Raster of data along the road segment geometry in Yellowstone National Park and its adjacent parks with the lat/long coordinates of the extracted road data being stored in xy format in the resulting dataframe.  
 
 ```{r, eval=TRUE}
-library(terra)
 roads <- opq(pulled_bb_large, timeout=300) %>%
   add_osm_feature(key = 'highway', value = 'primary') %>%
   add_osm_feature(key = 'highway', value = 'secondary') %>%

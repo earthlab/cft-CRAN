@@ -97,17 +97,7 @@ library(cft)
 
     ## Data (c) OpenStreetMap contributors, ODbL 1.0. https://www.openstreetmap.org/copyright
 
-    ## Loading required package: tidync
-
-    ## Loading required package: future
-
     ## Loading required package: magrittr
-
-    ## Loading required package: furrr
-
-    ## Loading required package: sf
-
-    ## Linking to GEOS 3.11.0, GDAL 3.5.1, PROJ 9.0.1; sf_use_s2() is TRUE
 
 ``` r
 ls(pos="package:cft")
@@ -165,7 +155,7 @@ the available_data() function. Additionally, the single_point_firehose()
 function combines the data from the parallelized download requests into
 a single sf spatial dataframe. A vignette walking through a common use
 of the single_point_firehose() function can be found at
-<https://github.com/earthlab/cft/blob/main/vignettes/firehose.md>
+<https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/firehose.md>
 
 ## We can look at just the unique variable types to get an idea of what’s available
 
@@ -396,7 +386,7 @@ single_point_firehose function which parallelizes download requests and
 combines the data into a single spatial dataframe. An example of how to
 make multiple download requests using available_data is shown in the
 available_data vignette at:
-<https://github.com/earthlab/cft/blob/main/vignettes/available-data.md>.
+<https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/available-data.md>.
 As is mentioned in the available_data vignette, it is computationally
 expensive to stitch the data from multiple download requests using
 available_data together, so it is easier and more computationally
@@ -430,7 +420,7 @@ lat/long locations, you will need to make multiple calls to the
 single_point_firehose function and combine the data from those requests.
 An example of how to use the single_point_firehose function to download
 MACA climate model data is shown in the firehose vignette at
-<https://github.com/earthlab/cft/blob/main/vignettes/firehose.md>.
+<https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/firehose.md>.
 
 **Therefore, the single_point_firehose function works best for
 downloading MACA climate model data for multiple climate variables from

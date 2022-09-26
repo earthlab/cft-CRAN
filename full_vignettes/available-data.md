@@ -18,7 +18,7 @@ from several climate models and any number of emission scenarios in
 their entirety for a single lat/long location, you should use the
 single_point_firehose function in the cft pacakge. A vignette on how to
 use the firehose function in the cft package is available at
-<https://github.com/earthlab/cft/blob/main/vignettes/firehose.md>.
+<https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/firehose.md>
 
 ### What you’ll learn
 
@@ -62,6 +62,9 @@ a range of years, a set of models, a set of parameters, and a set of
 representative concentration pathways to return. Leaving these arguments
 empty will result in a download of all available data for that location.
 
+Load the cft package and other libraries required for vignette. If you
+need to install cft, install it from CRAN.
+
 ## Attach cft and check the list of available functions
 
 ``` r
@@ -92,23 +95,52 @@ library(cft)
 
     ## Data (c) OpenStreetMap contributors, ODbL 1.0. https://www.openstreetmap.org/copyright
 
-    ## Loading required package: tidync
-
-    ## Loading required package: future
-
     ## Loading required package: magrittr
-
-    ## Loading required package: furrr
-
-    ## Loading required package: sf
-
-    ## Linking to GEOS 3.11.0, GDAL 3.5.1, PROJ 9.0.1; sf_use_s2() is TRUE
 
 ``` r
 ls(pos="package:cft")
 ```
 
     ## [1] "available_data"        "single_point_firehose"
+
+``` r
+library(sf)
+```
+
+    ## Linking to GEOS 3.11.0, GDAL 3.5.1, PROJ 9.0.1; sf_use_s2() is TRUE
+
+``` r
+library(ggplot2)
+library(tidync)
+library(tibble)
+library(stars)
+```
+
+    ## Loading required package: abind
+
+``` r
+library(terra)
+```
+
+    ## terra 1.6.7
+
+    ## 
+    ## Attaching package: 'terra'
+
+    ## The following objects are masked from 'package:magrittr':
+    ## 
+    ##     extract, inset
+
+``` r
+library(tidyterra)
+```
+
+    ## ── Attaching packages ─────────────────────────────────────── tidyterra 0.2.0 ──
+
+    ## 
+    ## Suppress this startup message by setting Sys.setenv(tidyterra.quiet = TRUE)
+
+    ## ✔ tidyr 1.2.1
 
 # Use read-only mode to find available data without initiating a full download.
 
@@ -206,8 +238,6 @@ This code downloads data for all models, all emission scenarios, and 5
 climate variables. Notice that this is a large download request.
 
 ``` r
-library(magrittr)
-library(dplyr)
 input_variables <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Relative Humidity", 
                        "Maximum Temperature", 
@@ -354,7 +384,6 @@ of data you can access with this system.
 <https://wiki.openstreetmap.org/wiki/Tags>
 
 ``` r
-library(osmdata)
 bb <- getbb("Hot Springs")
 my_boundary <- opq(bb, timeout=300) %>% 
   add_osm_feature(key = "boundary", value = "national_park") %>% 
@@ -386,8 +415,6 @@ because they best matched our area of interest. Use the quick plot below
 to visualize your area of interest before continuing.
 
 ``` r
-library(osmdata)
-library(sf)
 boundaries <- my_boundary$osm_multipolygons
 pulled_bb <- st_bbox(boundaries)
 pulled_bb
@@ -400,7 +427,6 @@ This quick map allows you to check that the polygon you downloaded
 matches your expectations.
 
 ``` r
-library(ggplot2)
 basemap <- ggplot(data = boundaries) +
   geom_sf(fill = "cornflowerblue") +
   suppressWarnings(geom_sf_text(aes(label = boundaries$name))) 
@@ -418,9 +444,6 @@ single point (the centroid of our polygon) for one year (2099). On our
 local machine this takes \~3 minutes.
 
 ``` r
-library(osmdata)
-library(sf)
-library(tidync)
 start_time <- Sys.time()
 center_point <- st_centroid(boundaries) %>% st_bbox(center_point)
 ```
@@ -440,7 +463,7 @@ end_time <- Sys.time()
 print(end_time - start_time)
 ```
 
-    ## Time difference of 53.45467 secs
+    ## Time difference of 1.046812 mins
 
 ``` r
 head(Pulled_data_single_space_single_timepoint)
@@ -494,9 +517,6 @@ console isn’t waiting for you to confirm that you want to try this
 request.
 
 ``` r
-library(osmdata)
-library(sf)
-library(tidync)
 start_time <- Sys.time()
 center_point <- st_centroid(boundaries) %>% st_bbox(center_point)
 Pulled_data_single_space_all_timepoints <- inputs$src %>% 
@@ -545,7 +565,6 @@ the future, a column with 1’s for the first half and 0’s for the second
 half, and a column with 0’s for the first half and 1’s for the second.
 
 ``` r
-library(tibble)
 # Year 2034
 time_min <- 38716
 time_max <- 73048
@@ -615,8 +634,6 @@ bounding box to match the official bounding box from the national parks
 service.
 
 ``` r
-library(osmdata)
-library(sf)
 bb <- getbb("yellowstone")
 bb_manual <- bb
 bb_manual[1,1] <- -111.15594815937659
@@ -652,7 +669,6 @@ Let’s do another quickplot to make sure our area of interest matches our
 expectations.
 
 ``` r
-library(ggplot2)
 basemap <- ggplot(data = boundaries_large) +
   geom_sf(fill = "cornflowerblue") +
   suppressWarnings(geom_sf_text(aes(label = boundaries_large$name))) 
@@ -686,7 +702,6 @@ input_variables
 # Download data by AOI, filtered times, and filtered variable list
 
 ``` r
-library(tidync)
 Pulled_data_large_area_few_variables <- inputs$src %>% 
   hyper_filter(lat = lat <= c(pulled_bb_large[4]+0.05) & lat >= c(pulled_bb_large[2]-0.05)) %>% 
   hyper_filter(lon = lon <= c(pulled_bb_large[3]+0.05) & lon >= c(pulled_bb_large[1]-0.05)) %>%
@@ -746,7 +761,6 @@ plot(Pulled_data_large_area_few_variables$time, Pulled_data_large_area_few_varia
 Check here to make sure you downloaded the proper spatial extent.
 
 ``` r
-library(ggplot2)
 check_filter <- Pulled_data_large_area_few_variables %>% filter(time == min(Pulled_data_large_area_few_variables$time))
 ggplot() +
   geom_sf(data = boundaries_large, fill = "cornflowerblue") +
@@ -759,7 +773,6 @@ ggplot() +
 ## If you encounter an error suggesting that you are pulling too much data, you will need to stitch a few requests together to keep each call below the 500 MB limit.
 
 ``` r
-library(tidync)
 Pulled_data_sub1 <- inputs$src %>% 
   hyper_filter(lat = lat <= c(pulled_bb[4]+0.05) & lat >= c(pulled_bb[2]-0.05)) %>% 
   hyper_filter(lon = lon <= c(pulled_bb[3]+0.05) & lon >= c(pulled_bb[1]-0.05)) %>% 
@@ -828,12 +841,6 @@ plot(Pulled_data_stitch$time, Pulled_data_stitch$`pr_MIROC5_r1i1p1_rcp85`)
 # Melt downloaded points into a raster before aggregation
 
 ``` r
-library(stars)
-```
-
-    ## Loading required package: abind
-
-``` r
 rast <- st_rasterize(Pulled_data_large_area_few_variables) 
 plot(rast)
 ```
@@ -849,34 +856,6 @@ the terra and tidyterra packages to convert the raster of downloaded
 points into a Spatial Raster.
 
 ``` r
-library(terra)
-```
-
-    ## terra 1.6.7
-
-    ## 
-    ## Attaching package: 'terra'
-
-    ## The following objects are masked from 'package:magrittr':
-    ## 
-    ##     extract, inset
-
-    ## The following object is masked from 'package:future':
-    ## 
-    ##     values
-
-``` r
-library(tidyterra)
-```
-
-    ## ── Attaching packages ─────────────────────────────────────── tidyterra 0.2.0 ──
-
-    ## 
-    ## Suppress this startup message by setting Sys.setenv(tidyterra.quiet = TRUE)
-
-    ## ✔ tidyr 1.2.1
-
-``` r
 data <- rast(rast)
 ```
 
@@ -889,7 +868,6 @@ extract data for those boundary points from the Spatial Raster and set
 xy=TRUE in order to obtain the lat/long coordinates of these points.
 
 ``` r
-library(terra)
 points <- vect(as_Spatial(boundaries_large$geometry))
 extracted <- terra::extract(data, points, xy=TRUE)
 ```
@@ -950,7 +928,6 @@ value of 0 for times that are not in year 2034 and a value of 1 for
 times that are in the year 2034.
 
 ``` r
-library(tibble)
 # Year 2034
 time_min <- 72048
 time_max <- 73048
@@ -998,7 +975,6 @@ sure that the bounding box for our area of interest matches our desired
 area of interest.
 
 ``` r
-library(osmdata)
 bb <- getbb("yellowstone")
 bb_manual <- bb
 bb_manual[1,1] <- -111.15594815937659
@@ -1022,8 +998,6 @@ my_boundary
     ##     $osm_multipolygons : 'sf' Simple Features Collection with 2 multipolygons
 
 ``` r
-library(osmdata)
-library(sf)
 boundaries <- my_boundary$osm_multipolygons
 pulled_bb <- st_bbox(boundaries)
 pulled_bb
@@ -1037,7 +1011,6 @@ ensure that the bounding box that was previously defined for the data
 matches our desired area of interest.
 
 ``` r
-library(ggplot2)
 basemap <- ggplot(data = boundaries) +
   geom_sf(fill = "cornflowerblue") +
   suppressWarnings(geom_sf_text(aes(label = boundaries$name))) 
@@ -1064,7 +1037,6 @@ and the Hadley Global Environmental Model 2 for emission scenario RCP
 8.5 using the filter that was defined above.
 
 ``` r
-library(tidync)
 Pulled_data <- inputs$src %>% 
   hyper_filter(lat = lat <= c(pulled_bb[4]+0.05) & lat >= c(pulled_bb[2]-0.05)) %>% 
   hyper_filter(lon = lon <= c(pulled_bb[3]+0.05) & lon >= c(pulled_bb[1]-0.05)) %>% 
@@ -1100,7 +1072,6 @@ downloaded data without having to include each of the times for which
 data were downloaded.
 
 ``` r
-library(ggplot2)
 check_filter <- Pulled_data %>% filter(time == min(Pulled_data$time))
 ggplot() +
   geom_sf(data = boundaries, fill = "cornflowerblue") +
@@ -1121,7 +1092,6 @@ eastward wind, and northward wind data within Yellowstone National Park
 at a single time point.
 
 ``` r
-library(tidync)
 vars <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Temperature", "Minimum Temperature", "Eastward Wind", "Northward Wind")) %>% 
   filter(Scenario %in% c("RCP 8.5")) %>% 
@@ -1276,7 +1246,6 @@ scenario filter to download the desired data from the MACA climate
 model.
 
 ``` r
-library(tidync)
 growing_data <- inputs$src %>% 
   hyper_filter(lat = lat <= c(44.5+0.05) & lat >= c(44.5-0.05)) %>% 
   hyper_filter(lon = lon <= c(-110.5+0.05) & lon >= c(-110.5-0.05)) %>% 
@@ -1440,7 +1409,6 @@ Let’s visualize the growing season over time for each model and emission
 scenario:
 
 ``` r
-library(ggplot2)
 growing_seasons %>%
   ggplot(aes(x = year, y = season_length, color = rcp)) + 
   geom_line(alpha = .3) + 
@@ -1504,7 +1472,6 @@ data from the middle of Yellowstone National Park from the MACA climate
 model data.
 
 ``` r
-library(tidync)
 climate_data <- inputs$src %>% 
   hyper_filter(lat = lat <= c(44.5+0.05) & lat >= c(44.5-0.05)) %>% 
   hyper_filter(lon = lon <= c(-110.5+0.05) & lon >= c(-110.5-0.05)) %>% 
@@ -1659,7 +1626,6 @@ the lat/long coordinates of these points in an xy format in the
 resulting dataframe.
 
 ``` r
-library(terra)
 river_sub <- st_buffer(river$osm_lines, 2200)
 river_points <- vect(as_Spatial(river_sub))
 extracted_river <- terra::extract(data, river_points, xy=TRUE)
@@ -1794,7 +1760,6 @@ extracted road data being stored in xy format in the resulting
 dataframe.
 
 ``` r
-library(terra)
 roads <- opq(pulled_bb_large, timeout=300) %>%
   add_osm_feature(key = 'highway', value = 'primary') %>%
   add_osm_feature(key = 'highway', value = 'secondary') %>%

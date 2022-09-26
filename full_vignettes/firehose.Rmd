@@ -19,7 +19,7 @@ This vignette provides a walk-through of a common use case of the Firehose funct
 The purpose of the Firehose functions is to download the data as quickly as possible by distributing tasks across multiple processors. The more cores you use, the faster this process will go. 
 
 Note that the Firehose function is best used for downloading  MACA climate model data for multiple climate variables from multiple climate models and emission scenarios in their entirety for a **single lat/long location**.  If you want to download data about multiple variables from multiple models and emission scenarios over a larger geographic region and a shorter time period, you should use the available_data function.  A vignette about how to use the available_data function is available at 
-https://github.com/earthlab/cft/blob/main/vignettes/available-data.md.
+https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/available-data.md.
 
 Load the cft package and other libraries required for vignette. If you need to install cft, install it from CRAN.
 
@@ -28,6 +28,8 @@ library(cft)
 library(future)
 library(furrr)
 library(ggplot2)
+library(sf)
+library(tidync)
 ```
 
 We will start by setting up our computer to run code on multiple cores instead of just one. The availableCores() function first checks your local computer to see how many cores are available and then subtracts one so that you still have an available core for running your operating system. The plan() function then starts a back-end structure where tasks can be assigned. **These backend systems can sometimes have difficulty shutting down after the process is done, especially if you force quite an operation in the works. If you find your code stalling without good explanation, it's good to restart your computer to clear any of these structures that may be stuck in memory.**  

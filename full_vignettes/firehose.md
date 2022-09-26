@@ -53,10 +53,21 @@ library(cft)
     ## Data (c) OpenStreetMap contributors, ODbL 1.0. https://www.openstreetmap.org/copyright
 
     ## Loading required package: magrittr
+
 ``` r
 library(future)
 library(furrr)
 library(ggplot2)
+```
+
+``` r
+library(sf)
+```
+
+    ## Linking to GEOS 3.11.0, GDAL 3.5.1, PROJ 9.0.1; sf_use_s2() is TRUE
+
+``` r
+library(tidync)
 ```
 
 We will start by setting up our computer to run code on multiple cores

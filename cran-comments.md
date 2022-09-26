@@ -1,3 +1,24 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Updated the link to climatologylab, changing http -> https
+
+* Decreased the size of the tarball to below 5 MB by removing extraneous files
+
+* Decreased the amount of libraries in the search path 
+
+* Decreased build time to less than 10 minutes. Results of check_for_cran:
+  Build ID:	cft_1.0.0.tar.gz-b28f380183fb46348babf929624ec9dc
+  Platform:	Windows Server 2022, R-devel, 64 bit
+  Submitted:	3 minutes 12.5 seconds ago
+  Build time:	3 minutes 11.7 seconds
+  https://builder.r-hub.io/status/cft_1.0.0.tar.gz-b28f380183fb46348babf929624ec9dc
+  
+* There were no ERRORs, WARNINGs, or NOTEs returned from R CMD Check
+
+
+## Initial submission
+
 ## R CMD check results
 There were no ERRORs or WARNINGs. 
 
