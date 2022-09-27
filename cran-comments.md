@@ -1,6 +1,22 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
+* Changed the description so as to not start with "This is a package", package 
+  name, title or similar.
+
+* Put USGS in single quotes
+
+* Added a link to the USGS API web interface in the description
+
+* Added vignettes instead of examples in the .Rd files, so more explanation 
+could be given and there could be more setup code before calling functions
+  
+* There were no ERRORs, WARNINGs, or NOTEs returned from R CMD Check
+
+
+## First resubmission
+This is a resubmission. In this version I have:
+
 * Updated the link to climatologylab, changing http -> https
 
 * Decreased the size of the tarball to below 5 MB by removing extraneous files

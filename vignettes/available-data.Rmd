@@ -1,0 +1,101 @@
+---
+title: "Using available data function"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Using available data function}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+---
+
+# Welcome to the Climate Future Toolbox's Available Data function
+
+**This is an abridged version of the full available-data vignette. The vignette 
+can be viewed in its entirety at https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/available-data.md**
+
+This vignette provides a walk-through of a common use case of the Available Data function and the cft package:
+understanding climate futures for a region of interest. 
+We'll use Hot Springs National Park, located in Arkansas, USA and Yellowstone National Park, located in Wyoming, USA, as case studies.
+
+Note that the available_data function is best used for downloading MACA climate model data for several climate variables from several climate models for any number of emission scenarios over a relatively small spatial region and over a relatively short time period.  If you would like to download MACA climate model data for several climate variables from several climate models and any number of emission scenarios in their entirety for a single lat/long location, you should use the single_point_firehose function in the cft pacakge.  A vignette on how to use the firehose function in the cft package is available at https://github.com/earthlab/cft/blob/main/vignettes/firehose.md.
+
+### What you'll learn
+
+This vignette will show you how to: 
+
+- Access climate data for a spatial region of interest
+- Produce a `data.frame` containing climate data
+- Visualize historical and future data
+- Generate and analyze new climate variables
+
+### What you'll need
+
+To get the most out of this vignette, we assume you have: 
+
+- At least 500 MB of disk space
+- Some familiarity with ggplot2
+- Some familiarity with dplyr (e.g., [`filter()`](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter), [`group_by()`](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/group_by), and [`summarise()`](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/summarise))
+
+## About the data
+
+Global Circulation Models (GCMs) provide estimates of historical and future 
+climate conditions. 
+The complexity of the climate system has lead to a large number GCMs and it is
+common practice to examine outputs from many different models, treating each as 
+one plausible future.
+
+Most GCMs are spatially coarse (often 1 degree), but downscaling provides finer
+scale estimates. The cft package uses one downscaled climate model called MACA 
+(Multivariate Adaptive Climate Analog) Version 2 
+([details here](https://www.climatologylab.org/maca.html)).
+
+### Acquiring and subsetting data within National Park Service boundaries
+
+This package was originally written with the National Park Service in mind, so
+it has the option to use the name of any park (or monument, preserve, etc.) within
+the NPS. Use the `cftdata()` function to specify a range of years, a set of models,
+a set of parameters, and a set of representative concentration pathways to return. 
+Leaving these arguments empty will result in a download of all available data 
+for that location.
+
+Load the cft package and other libraries required for vignette. If you need to install cft, install it from CRAN.
+
+## Attach cft and check the list of available functions
+```{r}
+library(cft)
+ls(pos="package:cft")
+```
+
+# Use read-only mode to find available data without initiating a full download.
+```{r}
+inputs <- cft::available_data()
+```
+
+## Look at the documentation for those functions
+```{r}
+?available_data
+?single_point_firehose
+```
+
+Look at the variables, emission scenarios, and models for which data are available
+```{r}
+levels(as.factor(inputs$variable_names$Variable))
+levels(as.factor(inputs$variable_names$`Variable abbreviation`))
+levels(as.factor(inputs$variable_names$Scenario))
+levels(as.factor(inputs$variable_names$`Scenario abbreviation`))
+levels(as.factor(inputs$variable_names$Model))
+levels(as.factor(inputs$variable_names$`Model abbreviation`))
+```
+
+This code downloads data for one model, one emission scenario, and 1 climate variable. 
+```{r}
+input_variables <- inputs$variable_names %>% 
+  filter(Variable %in% c("Maximum Relative Humidity")) %>% 
+  filter(Scenario %in% c( "RCP 4.5")) %>% 
+  filter(Model %in% c(
+    "Beijing Climate Center - Climate System Model 1.1")) %>%
+  
+  pull("Available variable")
+input_variables
+```
