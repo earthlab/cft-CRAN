@@ -19,7 +19,7 @@ This vignette provides a walk-through of a common use case of the Firehose funct
 The purpose of the Firehose functions is to download the data as quickly as possible by distributing tasks across multiple processors. The more cores you use, the faster this process will go. 
 
 Note that the Firehose function is best used for downloading  MACA climate model data for multiple climate variables from multiple climate models and emission scenarios in their entirety for a **single lat/long location**.  If you want to download data about multiple variables from multiple models and emission scenarios over a larger geographic region and a shorter time period, you should use the available_data function.  A vignette about how to use the available_data function is available at 
-https://github.com/earthlab/cft/blob/main/vignettes/available-data.md.
+https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/available-data.md.
 
 Load the cft package and other libraries required for vignette. If you need to install cft, install it from CRAN.
 
@@ -28,8 +28,8 @@ library(cft)
 library(future)
 library(furrr)
 library(ggplot2)
-library(tidync)
 library(sf)
+library(tidync)
 ```
 
 We will start by setting up our computer to run code on multiple cores instead of just one. The availableCores() function first checks your local computer to see how many cores are available and then subtracts one so that you still have an available core for running your operating system. The plan() function then starts a back-end structure where tasks can be assigned. **These backend systems can sometimes have difficulty shutting down after the process is done, especially if you force quite an operation in the works. If you find your code stalling without good explanation, it's good to restart your computer to clear any of these structures that may be stuck in memory.**  
@@ -42,11 +42,8 @@ plan(multisession, workers = n_cores)
 We pull all of our data from the internet.  Since internet connections can be a little variable, we try to make a strong link between our computer and the data server by creating an src object. Run this code to establish the connection and then use the src object you created to call on that connection for information. Because this src object is a connection, it will need to be reconnected each time you want to use it. You cannot make it once and then use if forever. 
 ```{r}
 web_link = "https://cida.usgs.gov/thredds/dodsC/macav2metdata_daily_future"
-
 # Change to "https://cida.usgs.gov/thredds/catalog.html?dataset=cida.usgs.gov/macav2metdata_daily_historical" for historical data. 
-
 src <- tidync::tidync(web_link)
-
 ```
 
 After a connection is made to the server, we can run the available_data() function to check that server and see what data it has available to us. The available_data() function produces three outputs: 
@@ -60,13 +57,10 @@ Here we print that list of variables. This may take up to a minutes as you retri
 # This is your menu
 inputs <- cft::available_data()
 inputs[[1]]
-
 ```
 
 From the table that was returned, we want to decide which variables we would like to request. If you are using the Firehose function, you likely have a long list of variables you'd like to download in their entirety. Use the [filter()](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter) function to select the variables you'd like to download. Store those choices in an object called input_variables to pass on to the Firehose function. 
 ```{r filter_variables_many, cache = TRUE}
-
-
 input_variables <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Relative Humidity", 
                        "Maximum Temperature", 
@@ -113,11 +107,9 @@ bb <- getbb(aoi_name)
 my_boundary <- opq(bb, timeout=300) %>%
   add_osm_feature(key = "boundary", value = "national_park") %>%
   osmdata_sf()
-
 my_boundary
 my_boundary$osm_multipolygons
 my_boundary$osm_multipolygons[1,]
-
 boundaries <- my_boundary$osm_multipolygons[1,] 
 ```
 
@@ -130,7 +122,6 @@ ggplot() +
 ```{r}
 pulled_bb <-  st_bbox(boundaries)
 pulled_bb
-
 pt <- st_coordinates(st_centroid(boundaries))
 ```
 
@@ -144,14 +135,10 @@ Now we can check to see which point in the dataset most closely resembles our su
 ```{r}
 lat_pt <- pt[1,2]
 lon_pt <- pt[1,1]
-
 lons <- src %>% activate("D2") %>% hyper_tibble()
 lats <- src %>% activate("D1") %>% hyper_tibble()
-
 known_lon <- lons[which(abs(lons-lon_pt)==min(abs(lons-lon_pt))),]
 known_lat <- lats[which(abs(lats-lat_pt)==min(abs(lats-lat_pt))),]
-
-
 chosen_pt <- st_as_sf(cbind(known_lon,known_lat), coords = c("lon", "lat"), crs = "WGS84", agr = "constant")
 ```
 
@@ -197,4 +184,3 @@ ggplot() +
  geom_sf(data = out, color = "red", size=0.5) +
   coord_sf(crs = 4326) 
 ```
-
