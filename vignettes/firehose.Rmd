@@ -25,7 +25,8 @@ Load the cft package and other libraries required for vignette. If you need to i
 library(cft)
 library(future)
 library(furrr)
-library(ggplot2)
+library(sf)
+library(tidync)
 ```
 
 We will start by setting up our computer to run code on multiple cores instead of just one. The availableCores() function first checks your local computer to see how many cores are available and then subtracts one so that you still have an available core for running your operating system. The plan() function then starts a back-end structure where tasks can be assigned. **These backend systems can sometimes have difficulty shutting down after the process is done, especially if you force quite an operation in the works. If you find your code stalling without good explanation, it's good to restart your computer to clear any of these structures that may be stuck in memory.**  
@@ -52,7 +53,7 @@ After a connection is made to the server, we can run the available_data() functi
 3. a table summarizing available variables and the attributes of those variables 
 
 Here we print that list of variables. This may take up to a minutes as you retrieve the information from the server. 
-```{r available_data, cache=TRUE}
+```{r}
 # This is your menu
 inputs <- cft::available_data()
 inputs[[1]]
@@ -60,36 +61,12 @@ inputs[[1]]
 ```
 
 From the table that was returned, we want to decide which variables we would like to request. If you are using the Firehose function, you likely have a long list of variables you'd like to download in their entirety. Use the [filter()](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter) function to select the variables you'd like to download. Store those choices in an object called input_variables to pass on to the Firehose function. 
-```{r filter_variables_many, cache=TRUE}
-
-
+```{r}
 input_variables <- inputs$variable_names %>% 
-  filter(Variable %in% c("Maximum Relative Humidity", 
-                       "Maximum Temperature", 
-                       "Minimum Relative Humidity",          
-                       "Minimum Temperature",                 
-                       "Precipitation")) %>% 
-  filter(Scenario %in% c( "RCP 8.5", "RCP 4.5")) %>% 
+  filter(Variable %in% c("Precipitation")) %>% 
+  filter(Scenario %in% c("RCP 8.5")) %>% 
   filter(Model %in% c(
-    "Beijing Climate Center - Climate System Model 1.1",
-    "Beijing Normal University - Earth System Model",
-    "Canadian Earth System Model 2",                                                                
-  "Centre National de Recherches Météorologiques - Climate Model 5",                              
-  "Commonwealth Scientific and Industrial Research Organisation - Mk3.6.0",                       
-  "Community Climate System Model 4",                                                             
-  "Geophysical Fluid Dynamics Laboratory - Earth System Model 2 Generalized Ocean Layer Dynamics",
-  "Geophysical Fluid Dynamics Laboratory - Earth System Model 2 Modular Ocean",                   
-  "Hadley Global Environment Model 2 - Climate Chemistry 365 (day) ",                             
- "Hadley Global Environment Model 2 - Earth System 365 (day)",                                   
- "Institut Pierre Simon Laplace (IPSL) - Climate Model 5A - Low Resolution",                     
- "Institut Pierre Simon Laplace (IPSL) - Climate Model 5A - Medium Resolution",                  
- "Institut Pierre Simon Laplace (IPSL) - Climate Model 5B - Low Resolution",                     
- "Institute of Numerical Mathematics Climate Model 4",                                           
- "Meteorological Research Institute - Coupled Global Climate Model 3",                           
- "Model for Interdisciplinary Research On Climate - Earth System Model",                         
- "Model for Interdisciplinary Research On Climate - Earth System Model - Chemistry",             
- "Model for Interdisciplinary Research On Climate 5",                                            
- "Norwegian Earth System Model 1 - Medium Resolution"  )) %>%
+    "Beijing Climate Center - Climate System Model 1.1"  )) %>%
   
   pull("Available variable")
 ```
@@ -100,46 +77,10 @@ You can check the object you created to see that it is a list of formatted varia
 input_variables
 ```
 
-
-# Set your area of interest
-  The Firehose function downloads all the requested variables, for all available time points, for a SINGLE geographic location. The underlying data are summarized to points on a grid and don't include every conceivable point you could enter. You need to first suggest a lat/long pair and then find the aggregated download point that is closest to your suggested point. In the code here, we use Open Street Map to download a polygon for Rocky Mountain National Park and then find the centroid as our suggested point. 
-```{r, warning=FALSE, message=FALSE, cache=TRUE}
-aoi_name <- "colorado"
-bb <- getbb(aoi_name)
-my_boundary <- opq(bb, timeout=300) %>%
-  add_osm_feature(key = "boundary", value = "national_park") %>%
-  osmdata_sf()
-
-my_boundary
-my_boundary$osm_multipolygons
-my_boundary$osm_multipolygons[1,]
-
-boundaries <- my_boundary$osm_multipolygons[1,] 
-```
-
-```{r}
-ggplot() +
-  geom_sf(data = boundaries, fill = "cornflowerblue") 
- 
-```
-
-```{r}
-pulled_bb <-  st_bbox(boundaries)
-pulled_bb
-
-pt <- st_coordinates(st_centroid(boundaries))
-```
-
-
-So, our suggested point is pt.
-```{r}
-pt
-```
-
 Now we can check to see which point in the dataset most closely resembles our suggested point. 
 ```{r}
-lat_pt <- pt[1,2]
-lon_pt <- pt[1,1]
+lat_pt <- 40.35543
+lon_pt <- -105.6973
 
 lons <- src %>% activate("D2") %>% hyper_tibble()
 lats <- src %>% activate("D1") %>% hyper_tibble()
@@ -156,16 +97,6 @@ The chosen point is relatively close to the suggested point.
 chosen_pt
 ```
 
-
-A plot of the suggested point and the available point next to eachother for perspective. You can see that there is an available data slice very near our suggested point. 
-```{r}
-ggplot() +
-  geom_sf(data = boundaries, fill = "cornflowerblue") +
-  geom_sf(data = st_centroid(boundaries), color = "red", size=0.5) +
-  geom_sf(data = chosen_pt, color = "green", size=0.5)
-```
-
-
 # Run the Firehose function
 You will need to supply the Firehose function with three things for it to work properly: 
 
@@ -180,17 +111,8 @@ Provide those three things to the single_point_firehose() function and it will d
 When you use numerous cores to make a lot of simultaneous requests, the server occasionally mistakes you for a DDOS attack and kills your connection. The firehose function deals with this uncertainty, and other forms of network disruption, by conducting two phases of downloads. It first tries to download everything you requested through a ton of independent api requests, it then scans all of the downloads to see which ones failed and organizes a follow-up download run to recapture downloads that failed on your first attempt. Do not worry if you see the progress bar get disrupted during either one of these passes, it will hopefully capture all of the errors and retry those downloads. 
 
 This function will run faster if you provide it more cores and a faster internet connection. In our test runs with 11 cores on a 12 core laptop and 800 MB/s internet it took 40-80 minutes to download 181 variables. The variance was largely driven by our network connection speed and error rate (because they require a second try to download).
-```{r, eval=FALSE}
+```{r, message=FALSE, eval=FALSE}
 out <- single_point_firehose(input_variables, known_lat, known_lon )
 out
-```
-
-
-It is good practice to plot the downloaded data to confirm that they are from the correct location.
-```{r, eval=FALSE}
-ggplot() +
-  geom_sf(data = boundaries, fill = "cornflowerblue") +
- geom_sf(data = out, color = "red", size=0.5) +
-  coord_sf(crs = 4326) 
 ```
 

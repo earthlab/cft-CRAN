@@ -65,9 +65,6 @@ Load the cft package and other libraries required for vignette. If you need to i
 ```{r}
 library(cft)
 ls(pos="package:cft")
-
-library(sf)
-library(ggplot2)
 ```
 
 # Use read-only mode to find available data without initiating a full download.
@@ -91,68 +88,14 @@ levels(as.factor(inputs$variable_names$Model))
 levels(as.factor(inputs$variable_names$`Model abbreviation`))
 ```
 
-This code downloads data for all models, all emission scenarios, and 5 climate variables.  Notice that this is a large download request.  
+This code downloads data for one model, one emission scenario, and 1 climate variable. 
 ```{r}
-
 input_variables <- inputs$variable_names %>% 
-  filter(Variable %in% c("Maximum Relative Humidity", 
-                       "Maximum Temperature", 
-                       "Minimum Relative Humidity",          
-                       "Minimum Temperature",                 
-                       "Precipitation")) %>% 
-  filter(Scenario %in% c( "RCP 4.5", "RCP 8.5")) %>% 
+  filter(Variable %in% c("Maximum Relative Humidity")) %>% 
+  filter(Scenario %in% c( "RCP 4.5")) %>% 
   filter(Model %in% c(
-    "Beijing Climate Center - Climate System Model 1.1",
-    "Beijing Normal University - Earth System Model",
-    "Canadian Earth System Model 2",                                                                
-  "Centre National de Recherches Météorologiques - Climate Model 5",                              
-  "Commonwealth Scientific and Industrial Research Organisation - Mk3.6.0",                       
-  "Community Climate System Model 4",                                                             
-  "Geophysical Fluid Dynamics Laboratory - Earth System Model 2 Generalized Ocean Layer Dynamics",
-  "Geophysical Fluid Dynamics Laboratory - Earth System Model 2 Modular Ocean",                   
-  "Hadley Global Environment Model 2 - Climate Chemistry 365 (day) ",                             
- "Hadley Global Environment Model 2 - Earth System 365 (day)",                                   
- "Institut Pierre Simon Laplace (IPSL) - Climate Model 5A - Low Resolution",                     
- "Institut Pierre Simon Laplace (IPSL) - Climate Model 5A - Medium Resolution",                  
- "Institut Pierre Simon Laplace (IPSL) - Climate Model 5B - Low Resolution",                     
- "Institute of Numerical Mathematics Climate Model 4",                                           
- "Meteorological Research Institute - Coupled Global Climate Model 3",                           
- "Model for Interdisciplinary Research On Climate - Earth System Model",                         
- "Model for Interdisciplinary Research On Climate - Earth System Model - Chemistry",             
- "Model for Interdisciplinary Research On Climate 5",                                            
- "Norwegian Earth System Model 1 - Medium Resolution"  )) %>%
+    "Beijing Climate Center - Climate System Model 1.1")) %>%
   
   pull("Available variable")
 input_variables
-```
-
-# Establish area of interst (AOI) by bounding box
-You will need to specify an appropriate area of interest for downloading spatial data. We utilize the functionality of open street map to make it fast and easy to download shapefiles for any area of interest. Here I am using the open street map (OSM) protocol to retrieve a shapefile for Hot Springs National Park. I choice this park because it is the smallest national park. 
-
-This chunk of code is first using the [getbb()](https://www.rdocumentation.org/packages/osmdata/versions/0.1.9/topics/getbb) function to retrieve a bounding box matching a plain language search request. That bounding box is then fed into the API call that retrieves the data and converts it into an r-specific spatial data format called sf.
-
-OSM uses a 'key' and 'value' system for organizing requests. You may want to spend some time familiarizing yourself with the immense library of data you can access with this system. https://wiki.openstreetmap.org/wiki/Tags
-```{r bounding_box_small, cache=TRUE}
-bb <- getbb("Hot Springs")
-my_boundary <- opq(bb, timeout=300) %>% 
-  add_osm_feature(key = "boundary", value = "national_park") %>% 
-osmdata_sf() 
-my_boundary
-```
-
-Here you re-calibrate the bounding box relative to the actual shapefiles you downloaded. The bounding box above was pulled from the osm database, this bounding box is for the polygons you actually used. These two boxes may be the same or they may be different but the one derived from your downloaded shapefile is reproducible. 
-
-Notice that we specify osm_multipolygons instead of osm_polygons. This is a case-specific choice. When you download a shapefile from OSM, if will include a number of different spatial object types and you can choose several of those options to move forward. We chose multipolygons because they best matched our area of interest. Use the quick plot below to visualize your area of interest before continuing. 
-```{r pulled_bounding_box_small, cache=TRUE}
-boundaries <- my_boundary$osm_multipolygons
-pulled_bb <- st_bbox(boundaries)
-pulled_bb
-```
-
-This quick map allows you to check that the polygon you downloaded matches your expectations. 
-```{r plot_of_area_of_interest_small, cache=TRUE, warning=FALSE, fig.height=8}
-basemap <- ggplot(data = boundaries) +
-  geom_sf(fill = "cornflowerblue") +
-  suppressWarnings(geom_sf_text(aes(label = boundaries$name))) 
-basemap
 ```

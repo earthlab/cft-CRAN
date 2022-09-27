@@ -32,8 +32,8 @@ Authors@R: c(
            email = "erve3705@colorado.edu")
     )
 Maintainer: Erick Verleye <erve3705@colorado.edu>
-Description: This is a package developed as a collaboration between Earth lab and the North Central Climate Adaptation Science Center to help users gain insights from available climate data. This package includes tools and instructions for downloading climate data via a USGS API and then organizing those data for visualization and analysis that drive insight.
-URL: https://github.com/earthlab/cft
+Description: Developed as a collaboration between Earth lab and the North Central Climate Adaptation Science Center to help users gain insights from available climate data. Includes tools and instructions for downloading climate data via a 'USGS' API and then organizing those data for visualization and analysis that drive insight. Web interface for 'USGS' API can be found at <http://thredds.northwestknowledge.net:8080/thredds/reacch_climate_CMIP5_aggregated_macav2_catalog.html>.
+URL: https://github.com/earthlab/cft-CRAN
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -55,6 +55,7 @@ Imports:
     rlist
 Suggests:
     testthat (>= 3.0.0),
-    covr
+    knitr
+VignetteBuilder: knitr
 RoxygenNote: 7.2.1
 Config/testthat/edition: 3
