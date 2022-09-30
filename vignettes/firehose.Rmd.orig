@@ -66,10 +66,13 @@ inputs[[1]]
 From the table that was returned, we want to decide which variables we would like to request. If you are using the Firehose function, you likely have a long list of variables you'd like to download in their entirety. Use the [filter()](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter) function to select the variables you'd like to download. Store those choices in an object called input_variables to pass on to the Firehose function. 
 ```{r}
 input_variables <- inputs$variable_names %>% 
-  filter(Variable %in% c("Precipitation")) %>% 
-  filter(Scenario %in% c("RCP 8.5")) %>% 
+  filter(Variable %in% c("Minimum Relative Humidity",          
+                       "Minimum Temperature",                 
+                       "Precipitation")) %>% 
+  filter(Scenario %in% c( "RCP 8.5", "RCP 4.5")) %>% 
   filter(Model %in% c(
-    "Beijing Climate Center - Climate System Model 1.1"  )) %>%
+    "Beijing Climate Center - Climate System Model 1.1",
+    "Beijing Normal University - Earth System Model")) %>%
   
   pull("Available variable")
 ```
@@ -80,18 +83,39 @@ You can check the object you created to see that it is a list of formatted varia
 input_variables
 ```
 
+# Set your area of interest
+  The Firehose function downloads all the requested variables, for all available time points, for a SINGLE geographic location. The underlying data are summarized to points on a grid and don't include every conceivable point you could enter. You need to first suggest a lat/long pair and then find the aggregated download point that is closest to your suggested point. In the code here, we use Open Street Map to download a polygon for Rocky Mountain National Park and then find the centroid as our suggested point. 
+```{r, warning=FALSE, message=FALSE}
+aoi_name <- "colorado"
+bb <- getbb(aoi_name)
+my_boundary <- opq(bb, timeout=300) %>%
+  add_osm_feature(key = "boundary", value = "national_park") %>%
+  osmdata_sf()
+my_boundary
+my_boundary$osm_multipolygons
+my_boundary$osm_multipolygons[1,]
+boundaries <- my_boundary$osm_multipolygons[1,] 
+```
+
+```{r}
+pulled_bb <-  st_bbox(boundaries)
+pulled_bb
+pt <- st_coordinates(st_centroid(boundaries))
+```
+
+So, our suggested point is pt.
+```{r}
+pt
+```
+
 Now we can check to see which point in the dataset most closely resembles our suggested point. 
 ```{r}
-lat_pt <- 40.35543
-lon_pt <- -105.6973
-
+lat_pt <- pt[1,2]
+lon_pt <- pt[1,1]
 lons <- src %>% activate("D2") %>% hyper_tibble()
 lats <- src %>% activate("D1") %>% hyper_tibble()
-
 known_lon <- lons[which(abs(lons-lon_pt)==min(abs(lons-lon_pt))),]
 known_lat <- lats[which(abs(lats-lat_pt)==min(abs(lats-lat_pt))),]
-
-
 chosen_pt <- st_as_sf(cbind(known_lon,known_lat), coords = c("lon", "lat"), crs = "WGS84", agr = "constant")
 ```
 
@@ -101,13 +125,12 @@ chosen_pt
 ```
 
 # Run the Firehose function
-You will need to supply the Firehose function with three things for it to work properly: 
+You will need to supply the Firehose function with two things for it to work properly: 
 
-1. a parallelization object produced by the plan() function to specify how many cores you want the function to use
-2. an input_variable object specifying the properly formatted list of variables you want to download
-3. the latitude and longitude coordinates for the available data point you want to extract 
+1. an input_variable object specifying the properly formatted list of variables you want to download
+2. the latitude and longitude coordinates for the available data point you want to extract 
 
-Provide those three things to the single_point_firehose() function and it will download your data as fast as possible, organize those data into an sf spatial dataframe, and return that dataframe. 
+Provide those two things to the single_point_firehose() function and it will download your data as fast as possible, organize those data into an sf spatial dataframe, and return that dataframe. 
 
 **Some notes of caution.** 
 
@@ -116,6 +139,8 @@ When you use numerous cores to make a lot of simultaneous requests, the server o
 This function will run faster if you provide it more cores and a faster internet connection. In our test runs with 11 cores on a 12 core laptop and 800 MB/s internet it took 40-80 minutes to download 181 variables. The variance was largely driven by our network connection speed and error rate (because they require a second try to download).
 ```{r, message=FALSE}
 out <- single_point_firehose(input_variables, known_lat, known_lon )
-out
 ```
 
+```{r}
+out
+```

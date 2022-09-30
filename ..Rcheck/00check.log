@@ -1,0 +1,10 @@
+* using log directory ‘/Users/erick/Desktop/Work/CRAN_submissions/cft-CRAN/..Rcheck’
+* using R version 4.2.1 (2022-06-23)
+* using platform: aarch64-apple-darwin21.6.0 (64-bit)
+* using session charset: UTF-8
+* using option ‘--as-cran’
+* checking for file ‘./DESCRIPTION’ ... ERROR
+Required field missing or empty:
+  ‘Author’
+* DONE
+Status: 1 ERROR

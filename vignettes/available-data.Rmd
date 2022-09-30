@@ -49,48 +49,191 @@ scale estimates. The cft package uses one downscaled climate model called MACA
 (Multivariate Adaptive Climate Analog) Version 2 
 ([details here](https://www.climatologylab.org/maca.html)).
 
-### Acquiring and subsetting data within National Park Service boundaries
-
-This package was originally written with the National Park Service in mind, so
-it has the option to use the name of any park (or monument, preserve, etc.) within
-the NPS. Use the `cftdata()` function to specify a range of years, a set of models,
-a set of parameters, and a set of representative concentration pathways to return. 
-Leaving these arguments empty will result in a download of all available data 
-for that location.
-
 Load the cft package and other libraries required for vignette. If you need to install cft, install it from CRAN.
 
 ## Attach cft and check the list of available functions
-```{r}
+
+```r
 library(cft)
+```
+
+```
+## Loading required package: plyr
+```
+
+```
+## Loading required package: dplyr
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:plyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```
+## Loading required package: osmdata
+```
+
+```
+## Data (c) OpenStreetMap contributors, ODbL 1.0. https://www.openstreetmap.org/copyright
+```
+
+```
+## Loading required package: magrittr
+```
+
+```r
 library(sf)
+```
+
+```
+## Linking to GEOS 3.11.0, GDAL 3.5.2, PROJ 9.1.0; sf_use_s2() is TRUE
+```
+
+```r
 library(tidync)
 ls(pos="package:cft")
 ```
 
+```
+## [1] "available_data"        "single_point_firehose"
+```
+
 # Use read-only mode to find available data without initiating a full download.
-```{r}
+
+```r
 inputs <- cft::available_data()
 ```
 
+```
+## Trying to connect to the USGS.gov API
+```
+
+```
+## not a file: 
+## ' https://cida.usgs.gov/thredds/dodsC/macav2metdata_daily_future '
+## 
+## ... attempting remote connection
+```
+
+```
+## Connection succeeded.
+```
+
+```
+## Reading results
+```
+
+```
+## Converting into an R data.table
+```
+
 ## Look at the documentation for those functions
-```{r}
+
+```r
 ?available_data
 ?single_point_firehose
 ```
 
 Look at the variables, emission scenarios, and models for which data are available
-```{r}
+
+```r
 levels(as.factor(inputs$variable_names$Variable))
+```
+
+```
+## [1] "Eastward Wind"                       "Maximum Relative Humidity"          
+## [3] "Maximum Temperature"                 "Minimum Relative Humidity"          
+## [5] "Minimum Temperature"                 "Northward Wind"                     
+## [7] "Precipitation"                       "Specific Humidity"                  
+## [9] "Surface Downswelling Shortwave Flux"
+```
+
+```r
 levels(as.factor(inputs$variable_names$`Variable abbreviation`))
+```
+
+```
+## [1] "huss"   "pr"     "rhsmax" "rhsmin" "rsds"   "tasmax" "tasmin" "uas"   
+## [9] "vas"
+```
+
+```r
 levels(as.factor(inputs$variable_names$Scenario))
+```
+
+```
+## [1] "RCP 4.5" "RCP 8.5"
+```
+
+```r
 levels(as.factor(inputs$variable_names$`Scenario abbreviation`))
+```
+
+```
+## [1] "rcp45" "rcp85"
+```
+
+```r
 levels(as.factor(inputs$variable_names$Model))
+```
+
+```
+##  [1] "Beijing Climate Center - Climate System Model 1.1"                                            
+##  [2] "Beijing Normal University - Earth System Model"                                               
+##  [3] "Canadian Earth System Model 2"                                                                
+##  [4] "Centre National de Recherches Météorologiques - Climate Model 5"                              
+##  [5] "Commonwealth Scientific and Industrial Research Organisation - Mk3.6.0"                       
+##  [6] "Community Climate System Model 4"                                                             
+##  [7] "Geophysical Fluid Dynamics Laboratory - Earth System Model 2 Generalized Ocean Layer Dynamics"
+##  [8] "Geophysical Fluid Dynamics Laboratory - Earth System Model 2 Modular Ocean"                   
+##  [9] "Hadley Global Environment Model 2 - Climate Chemistry 365 (day) "                             
+## [10] "Hadley Global Environment Model 2 - Earth System 365 (day)"                                   
+## [11] "Institut Pierre Simon Laplace (IPSL) - Climate Model 5A - Low Resolution"                     
+## [12] "Institut Pierre Simon Laplace (IPSL) - Climate Model 5A - Medium Resolution"                  
+## [13] "Institut Pierre Simon Laplace (IPSL) - Climate Model 5B - Low Resolution"                     
+## [14] "Institute of Numerical Mathematics Climate Model 4"                                           
+## [15] "Meteorological Research Institute - Coupled Global Climate Model 3"                           
+## [16] "Model for Interdisciplinary Research On Climate - Earth System Model"                         
+## [17] "Model for Interdisciplinary Research On Climate - Earth System Model - Chemistry"             
+## [18] "Model for Interdisciplinary Research On Climate 5"                                            
+## [19] "Norwegian Earth System Model 1 - Medium Resolution"
+```
+
+```r
 levels(as.factor(inputs$variable_names$`Model abbreviation`))
 ```
 
+```
+##  [1] "bcc-csm1-1"     "bcc-csm1-1-m"   "BNU-ESM"        "CanESM2"       
+##  [5] "CCSM4"          "CNRM-CM5"       "CSIRO-Mk3-6-0"  "GFDL-ESM2G"    
+##  [9] "GFDL-ESM2M"     "HadGEM2-CC365"  "HadGEM2-ES365"  "inmcm4"        
+## [13] "IPSL-CM5A-LR"   "IPSL-CM5A-MR"   "IPSL-CM5B-LR"   "MIROC-ESM"     
+## [17] "MIROC-ESM-CHEM" "MIROC5"         "MRI-CGCM3"      "NorESM1-M"
+```
+
 This code downloads data for one model, one emission scenario, and 1 climate variable. 
-```{r, warning=FALSE}
+
+```r
 input_variables <- inputs$variable_names %>% 
   filter(Variable %in% c("Maximum Relative Humidity")) %>% 
   filter(Scenario %in% c( "RCP 4.5")) %>% 
@@ -101,13 +244,18 @@ input_variables <- inputs$variable_names %>%
 input_variables
 ```
 
+```
+## [1] "rhsmax_bcc-csm1-1_r1i1p1_rcp45"
+```
+
 # Establish area of interst (AOI) by bounding box
 You will need to specify an appropriate area of interest for downloading spatial data. We utilize the functionality of open street map to make it fast and easy to download shapefiles for any area of interest. Here I am using the open street map (OSM) protocol to retrieve a shapefile for Hot Springs National Park. I choice this park because it is the smallest national park. 
 
 This chunk of code is first using the [getbb()](https://www.rdocumentation.org/packages/osmdata/versions/0.1.9/topics/getbb) function to retrieve a bounding box matching a plain language search request. That bounding box is then fed into the API call that retrieves the data and converts it into an r-specific spatial data format called sf.
 
 OSM uses a 'key' and 'value' system for organizing requests. You may want to spend some time familiarizing yourself with the immense library of data you can access with this system. https://wiki.openstreetmap.org/wiki/Tags
-```{r, warning=FALSE}
+
+```r
 bb <- getbb("Hot Springs")
 my_boundary <- opq(bb, timeout=300) %>% 
   add_osm_feature(key = "boundary", value = "national_park") %>% 
@@ -115,20 +263,39 @@ osmdata_sf()
 my_boundary
 ```
 
+```
+## Object of class 'osmdata' with:
+##                  $bbox : 34.4264361,-93.1290543,34.5594048,-92.9850972
+##         $overpass_call : The call submitted to the overpass API
+##                  $meta : metadata including timestamp and version numbers
+##            $osm_points : 'sf' Simple Features Collection with 611 points
+##             $osm_lines : NULL
+##          $osm_polygons : 'sf' Simple Features Collection with 2 polygons
+##        $osm_multilines : NULL
+##     $osm_multipolygons : 'sf' Simple Features Collection with 1 multipolygons
+```
+
 Here you re-calibrate the bounding box relative to the actual shapefiles you downloaded. The bounding box above was pulled from the osm database, this bounding box is for the polygons you actually used. These two boxes may be the same or they may be different but the one derived from your downloaded shapefile is reproducible. 
 
 Notice that we specify osm_multipolygons instead of osm_polygons. This is a case-specific choice. When you download a shapefile from OSM, if will include a number of different spatial object types and you can choose several of those options to move forward. We chose multipolygons because they best matched our area of interest. Use the quick plot below to visualize your area of interest before continuing. 
-```{r, warning=FALSE}
+
+```r
 boundaries <- my_boundary$osm_multipolygons
 pulled_bb <- st_bbox(boundaries)
 pulled_bb
+```
+
+```
+##      xmin      ymin      xmax      ymax 
+## -93.11393  34.49884 -93.01857  34.55948
 ```
 
 # Download full time series from a single point
 
 It's time to download. Here is a simple and fast example of data from a single point (the centroid of our polygon) for one year (2099).
 
-```{r, warning=FALSE}
+
+```r
 start_time <- Sys.time()
 center_point <- st_centroid(boundaries) %>% st_bbox(center_point)
 times <- inputs$available_times
@@ -140,5 +307,30 @@ Pulled_data_single_space_single_timepoint <- inputs$src %>%
   st_as_sf(coords = c("lon", "lat"), crs = 4326, agr = "constant") 
 end_time <- Sys.time()
 print(end_time - start_time)
+```
+
+```
+## Time difference of 1.617556 secs
+```
+
+```r
 head(Pulled_data_single_space_single_timepoint)
+```
+
+```
+## Simple feature collection with 6 features and 2 fields
+## Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -93.10602 ymin: 34.4796 xmax: -93.02267 ymax: 34.52126
+## Geodetic CRS:  WGS 84
+## # A tibble: 6 × 3
+##   `rhsmax_bcc-csm1-1_r1i1p1_rcp45`  time             geometry
+##                              <int> <dbl>          <POINT [°]>
+## 1                               99 44558  (-93.10602 34.4796)
+## 2                              100 44558  (-93.06433 34.4796)
+## 3                              100 44558  (-93.02267 34.4796)
+## 4                              100 44558 (-93.10602 34.52126)
+## 5                               98 44558 (-93.06433 34.52126)
+## 6                               99 44558 (-93.02267 34.52126)
 ```

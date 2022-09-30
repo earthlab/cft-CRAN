@@ -54,6 +54,7 @@ Imports:
     pipeR,
     rlist
 Suggests:
+    lubridate,
     testthat (>= 3.0.0),
     knitr
 VignetteBuilder: knitr
