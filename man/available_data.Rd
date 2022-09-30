@@ -27,3 +27,7 @@ historical data while the 2006 to 2099 portion represents modeled data.
 The original data sets may be found at
 \url{http://thredds.northwestknowledge.net:8080/thredds/reacch_climate_CMIP5_aggregated_macav2_catalog.html}
 }
+\examples{
+inputs <- available_data()
+levels(as.factor(inputs$variable_names$Variable))
+}

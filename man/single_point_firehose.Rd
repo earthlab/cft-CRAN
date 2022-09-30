@@ -9,7 +9,7 @@ single_point_firehose(
   lat,
   lon,
   web_link = "https://cida.usgs.gov/thredds/dodsC/macav2metdata_daily_future",
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ single_point_firehose(
 
 \item{web_link}{A web link to the api data source you want to read (character)}
 
-\item{verbose}{Should the api outputs be combined with internal metadata? (logical)}
+\item{verbose}{If True detailed processing information will be output (logical)}
 }
 \value{
 Data.frame of requested data

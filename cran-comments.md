@@ -4,7 +4,7 @@ This is a resubmission. In this version I have:
 * Changed the description so as to not start with "This is a package", package 
   name, title or similar.
 
-* Put USGS in single quotes
+* Put USGS in single quotes in description
 
 * Added a link to the USGS API web interface in the description
 

@@ -12,12 +12,15 @@ editor_options:
 ---
 # Welcome to the Climate Futures Toolbox's Firehose function
 
+**This is an abridged version of the full firehose vignette. The vignette 
+can be viewed in its entirety at https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/firehose.md**
+
 This vignette provides a walk-through of a common use case of the Firehose function.
 
 The purpose of the Firehose functions is to download the data as quickly as possible by distributing tasks across multiple processors. The more cores you use, the faster this process will go. 
 
 Note that the Firehose function is best used for downloading  MACA climate model data for multiple climate variables from multiple climate models and emission scenarios in their entirety for a **single lat/long location**.  If you want to download data about multiple variables from multiple models and emission scenarios over a larger geographic region and a shorter time period, you should use the available_data function.  A vignette about how to use the available_data function is available at 
-https://github.com/earthlab/cft/blob/main/vignettes/available-data.md.
+https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/available-data.md.
 
 Load the cft package and other libraries required for vignette. If you need to install cft, install it from CRAN.
 
@@ -111,7 +114,7 @@ Provide those three things to the single_point_firehose() function and it will d
 When you use numerous cores to make a lot of simultaneous requests, the server occasionally mistakes you for a DDOS attack and kills your connection. The firehose function deals with this uncertainty, and other forms of network disruption, by conducting two phases of downloads. It first tries to download everything you requested through a ton of independent api requests, it then scans all of the downloads to see which ones failed and organizes a follow-up download run to recapture downloads that failed on your first attempt. Do not worry if you see the progress bar get disrupted during either one of these passes, it will hopefully capture all of the errors and retry those downloads. 
 
 This function will run faster if you provide it more cores and a faster internet connection. In our test runs with 11 cores on a 12 core laptop and 800 MB/s internet it took 40-80 minutes to download 181 variables. The variance was largely driven by our network connection speed and error rate (because they require a second try to download).
-```{r, message=FALSE, eval=FALSE}
+```{r, message=FALSE}
 out <- single_point_firehose(input_variables, known_lat, known_lon )
 out
 ```

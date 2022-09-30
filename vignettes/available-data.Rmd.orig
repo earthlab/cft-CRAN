@@ -18,7 +18,7 @@ This vignette provides a walk-through of a common use case of the Available Data
 understanding climate futures for a region of interest. 
 We'll use Hot Springs National Park, located in Arkansas, USA and Yellowstone National Park, located in Wyoming, USA, as case studies.
 
-Note that the available_data function is best used for downloading MACA climate model data for several climate variables from several climate models for any number of emission scenarios over a relatively small spatial region and over a relatively short time period.  If you would like to download MACA climate model data for several climate variables from several climate models and any number of emission scenarios in their entirety for a single lat/long location, you should use the single_point_firehose function in the cft pacakge.  A vignette on how to use the firehose function in the cft package is available at https://github.com/earthlab/cft/blob/main/vignettes/firehose.md.
+Note that the available_data function is best used for downloading MACA climate model data for several climate variables from several climate models for any number of emission scenarios over a relatively small spatial region and over a relatively short time period.  If you would like to download MACA climate model data for several climate variables from several climate models and any number of emission scenarios in their entirety for a single lat/long location, you should use the single_point_firehose function in the cft pacakge.  A vignette on how to use the firehose function in the cft package is available at https://github.com/earthlab/cft-CRAN/blob/master/full_vignettes/firehose.md.
 
 ### What you'll learn
 
